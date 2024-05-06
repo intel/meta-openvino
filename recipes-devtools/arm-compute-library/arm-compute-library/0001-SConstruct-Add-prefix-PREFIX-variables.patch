@@ -1,0 +1,32 @@
+From bdf7b148177eb2abfb498813c6deae75028db517 Mon Sep 17 00:00:00 2001
+From: Naveen Saini <naveen.kumar.saini@intel.com>
+Date: Tue, 23 Jan 2024 13:53:42 +0800
+Subject: [PATCH] SConstruct: Add prefix/PREFIX variables.
+
+Error:
+| Unknown variables: PREFIX prefix
+| ERROR: scons build execution failed.
+
+Upstream-Status: Inappropriate [oe-specific]
+
+Signed-off-by: Naveen Saini <naveen.kumar.saini@intel.com>
+---
+ SConstruct | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/SConstruct b/SConstruct
+index 68c518a4a0..e07b0db5fd 100644
+--- a/SConstruct
++++ b/SConstruct
+@@ -131,6 +131,8 @@ vars.AddVariables(
+     ListVariable("custom_options", "Custom options that can be used to turn on/off features", "none", ["disable_mmla_fp"]),
+     ListVariable("data_type_support", "Enable a list of data types to support", "all", ["qasymm8", "qasymm8_signed", "qsymm16", "fp16", "fp32", "integer"]),
+     ListVariable("data_layout_support", "Enable a list of data layout to support", "all", ["nhwc", "nchw"]),
++    ("prefix", "Testing prefix", "auto"),
++    ("PREFIX", "Testing PREFIX", "auto"),
+     ("toolchain_prefix", "Override the toolchain prefix; used by all toolchain components: compilers, linker, assembler etc. If unspecified, use default(auto) prefixes; if passed an empty string '' prefixes would be disabled", "auto"),
+     ("compiler_prefix", "Override the compiler prefix; used by just compilers (CC,CXX); further overrides toolchain_prefix for compilers; this is for when the compiler prefixes are different from that of the linkers, archivers etc. If unspecified, this is the same as toolchain_prefix; if passed an empty string '' prefixes would be disabled", "auto"),
+     BoolVariable("thread_sanitizer", "Enable ThreadSanitizer", False),
+-- 
+2.34.1
+
