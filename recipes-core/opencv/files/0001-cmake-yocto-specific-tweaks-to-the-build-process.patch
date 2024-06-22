@@ -1,4 +1,4 @@
-From e4edbdae9a2dbfec6fd0706bdfff8abdfe3363fc Mon Sep 17 00:00:00 2001
+From 16c4155655e63d5e5ee1e463b6e29038870c68a8 Mon Sep 17 00:00:00 2001
 From: Anuj Mittal <anuj.mittal@intel.com>
 Date: Wed, 29 Nov 2023 12:42:57 +0530
 Subject: [PATCH] cmake: yocto specific tweaks to the build process
@@ -8,17 +8,32 @@ Subject: [PATCH] cmake: yocto specific tweaks to the build process
 * Install sample binaries as well.
 * Dont try to write triggers for CPack. We package ourselves.
 * Fix the installation path for Python modules when baselib = lib64.
+* python3-config is installed as python3-config in oe-core Python recipe
 
 Upstream-Status: Inappropriate
 
 Signed-off-by: Anuj Mittal <anuj.mittal@intel.com>
 ---
- cmake/developer_package/packaging/rpm/rpm.cmake | 2 +-
- cmake/developer_package/target_flags.cmake      | 4 ++--
- samples/cpp/CMakeLists.txt                      | 6 +++---
- src/bindings/python/CMakeLists.txt              | 2 +-
- 4 files changed, 7 insertions(+), 7 deletions(-)
+ cmake/developer_package/cross_compile/python_helpers.cmake | 2 +-
+ cmake/developer_package/packaging/rpm/rpm.cmake            | 2 +-
+ cmake/developer_package/target_flags.cmake                 | 4 ++--
+ samples/cpp/CMakeLists.txt                                 | 6 +++---
+ src/bindings/python/CMakeLists.txt                         | 2 +-
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
+diff --git a/cmake/developer_package/cross_compile/python_helpers.cmake b/cmake/developer_package/cross_compile/python_helpers.cmake
+index a6c7de73937..ad47bb68798 100644
+--- a/cmake/developer_package/cross_compile/python_helpers.cmake
++++ b/cmake/developer_package/cross_compile/python_helpers.cmake
+@@ -23,7 +23,7 @@ function(ov_detect_python_module_extension)
+     elseif(AARCH64)
+         set(python3_config aarch64-linux-gnu-python3-config)
+     elseif(X86_64)
+-        set(python3_config x86_64-linux-gnu-python3-config)
++        set(python3_config python3-config)
+     else()
+         message(WARNING "Python cross-compilation warning: ${OV_ARCH} is unknown for python build. Please, specify PYTHON_MODULE_EXTENSION explicitly")
+     endif()
 diff --git a/cmake/developer_package/packaging/rpm/rpm.cmake b/cmake/developer_package/packaging/rpm/rpm.cmake
 index 99f11730983..1a1f61fcd3d 100644
 --- a/cmake/developer_package/packaging/rpm/rpm.cmake
@@ -33,26 +48,26 @@ index 99f11730983..1a1f61fcd3d 100644
  #
  # Functions helpful for packaging your modules with RPM cpack
 diff --git a/cmake/developer_package/target_flags.cmake b/cmake/developer_package/target_flags.cmake
-index d047a1aebd9..4e8ca68c60f 100644
+index c6e3ebb2906..5891a1397e6 100644
 --- a/cmake/developer_package/target_flags.cmake
 +++ b/cmake/developer_package/target_flags.cmake
-@@ -149,7 +149,7 @@ function(ov_glibc_version)
+@@ -207,7 +207,7 @@ function(ov_libc_version)
      endif()
  endfunction()
  
--ov_glibc_version()
-+#ov_glibc_version()
+-ov_libc_version()
++#ov_libc_version()
  
  #
  # Detects default value for _GLIBCXX_USE_CXX11_ABI for current compiler
-@@ -160,4 +160,4 @@ macro(ov_get_glibcxx_use_cxx11_abi)
+@@ -218,4 +218,4 @@ macro(ov_get_glibcxx_use_cxx11_abi)
      endif()
  endmacro()
  
 -ov_get_glibcxx_use_cxx11_abi()
 +#ov_get_glibcxx_use_cxx11_abi()
 diff --git a/samples/cpp/CMakeLists.txt b/samples/cpp/CMakeLists.txt
-index 4d33bff944e..3e7f1458578 100644
+index 695dbbe7955..612c6e383c1 100644
 --- a/samples/cpp/CMakeLists.txt
 +++ b/samples/cpp/CMakeLists.txt
 @@ -206,9 +206,9 @@ macro(ov_add_sample)
@@ -69,17 +84,17 @@ index 4d33bff944e..3e7f1458578 100644
      # create global target with all samples / demo apps
      if(NOT TARGET ov_samples)
 diff --git a/src/bindings/python/CMakeLists.txt b/src/bindings/python/CMakeLists.txt
-index 6cf43ec3fed..d539b9d003f 100644
+index f075dc21250..035963e6bc2 100644
 --- a/src/bindings/python/CMakeLists.txt
 +++ b/src/bindings/python/CMakeLists.txt
-@@ -320,7 +320,7 @@ if(ENABLE_PYTHON_PACKAGING)
+@@ -324,7 +324,7 @@ if(ENABLE_PYTHON_PACKAGING)
      # install OpenVINO Python API
  
-     set(python_package_prefix "${CMAKE_CURRENT_BINARY_DIR}/install_${pyversion}")
--    set(install_lib "${python_package_prefix}/lib/${python_versioned_folder}/${ov_site_packages}")
-+    set(install_lib "${python_package_prefix}/${CMAKE_INSTALL_LIBDIR}/${python_versioned_folder}/${ov_site_packages}")
+     set(ov_python_package_prefix "${CMAKE_CURRENT_BINARY_DIR}/openvino/install_${pyversion}")
+-    set(ov_install_lib "${ov_python_package_prefix}/lib/${python_versioned_folder}/${ov_site_packages}")
++    set(ov_install_lib "${ov_python_package_prefix}/${CMAKE_INSTALL_LIBDIR}/${python_versioned_folder}/${ov_site_packages}")
      set(openvino_meta_info_subdir "openvino-${OpenVINO_VERSION}-py${python_xy}.egg-info")
-     set(openvino_meta_info_file "${install_lib}/${openvino_meta_info_subdir}/PKG-INFO")
+     set(openvino_meta_info_file "${ov_install_lib}/${openvino_meta_info_subdir}/PKG-INFO")
  
 -- 
 2.34.1
