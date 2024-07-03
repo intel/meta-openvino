@@ -1,0 +1,82 @@
+From a1a97fe4ca9497069ac710f0f97614dfc5a46da0 Mon Sep 17 00:00:00 2001
+From: Anuj Mittal <anuj.mittal@intel.com>
+Date: Wed, 3 Jul 2024 14:21:13 +0800
+Subject: [PATCH] fix python detection
+
+OE-core installs python3-config without the prefixes so make sure we're
+able to use those.
+
+python3targetconfig class also allows using the target python config so
+we can use the right variables. We don't need tweaks to allow cmake to
+refer to host headers as well when looking for Python development
+modules. 
+
+Upstream-Status: Inappropriate
+
+Signed-off-by: Anuj Mittal <anuj.mittal@intel.com>
+---
+ .../cross_compile/python_helpers.cmake        | 40 ++++++++++---------
+ 1 file changed, 22 insertions(+), 18 deletions(-)
+
+diff --git a/cmake/developer_package/cross_compile/python_helpers.cmake b/cmake/developer_package/cross_compile/python_helpers.cmake
+index ad47bb68798..095c1e6f851 100644
+--- a/cmake/developer_package/cross_compile/python_helpers.cmake
++++ b/cmake/developer_package/cross_compile/python_helpers.cmake
+@@ -18,14 +18,18 @@ function(ov_detect_python_module_extension)
+         return()
+     endif()
+ 
+-    if(RISCV64)
+-        set(python3_config riscv64-linux-gnu-python3-config)
+-    elseif(AARCH64)
+-        set(python3_config aarch64-linux-gnu-python3-config)
+-    elseif(X86_64)
+-        set(python3_config python3-config)
++    if(NOT PYTHON3_CONFIG)
++        if(RISCV64)
++            set(python3_config riscv64-linux-gnu-python3-config)
++        elseif(AARCH64)
++            set(python3_config aarch64-linux-gnu-python3-config)
++        elseif(X86_64)
++            set(python3_config python3-config)
++        else()
++            message(WARNING "Python cross-compilation warning: ${OV_ARCH} is unknown for python build. Please, specify PYTHON_MODULE_EXTENSION explicitly")
++        endif()
+     else()
+-        message(WARNING "Python cross-compilation warning: ${OV_ARCH} is unknown for python build. Please, specify PYTHON_MODULE_EXTENSION explicitly")
++	set(python3_config ${PYTHON3_CONFIG})
+     endif()
+ 
+     find_host_program(python3_config_exec NAMES ${python3_config})
+@@ -55,20 +59,20 @@ macro(ov_find_python3 find_package_mode)
+         set(python3_development_component Development)
+     endif()
+ 
+-    if(CMAKE_CROSSCOMPILING AND LINUX)
+-        # allow to find python headers from host in case of cross-compilation
+-        # e.g. install libpython3-dev:<foreign arch> and finds its headers
+-        set(_old_CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
+-        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
+-        ov_cross_compile_define_debian_arch()
+-    endif()
++    #if(CMAKE_CROSSCOMPILING AND LINUX)
++    #    # allow to find python headers from host in case of cross-compilation
++    #    # e.g. install libpython3-dev:<foreign arch> and finds its headers
++    #    set(_old_CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
++    #    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
++    #    ov_cross_compile_define_debian_arch()
++    #endif()
+ 
+     find_package(Python3 ${find_package_mode} COMPONENTS Interpreter ${python3_development_component})
+ 
+-    if(CMAKE_CROSSCOMPILING AND LINUX)
+-        ov_cross_compile_define_debian_arch_reset()
+-        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${_old_CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
+-    endif()
++    #if(CMAKE_CROSSCOMPILING AND LINUX)
++    #    ov_cross_compile_define_debian_arch_reset()
++    #    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${_old_CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
++    #endif()
+ 
+     unset(python3_development_component)
+ endmacro()
