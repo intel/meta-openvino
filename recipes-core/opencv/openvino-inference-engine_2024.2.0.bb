@@ -20,6 +20,7 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0001-cmake-yocto-specific-tweaks-to-the-build-process.patch \
            file://0002-cmake-Fix-overloaded-virtual-error.patch \
            file://0003-protobuf-allow-target-protoc-to-be-built.patch \
+           file://0004-fix-python-detection.patch \
            "
 
 SRCREV_openvino = "5c0f38f83f62fdabcdc980fa6dc3ed1ea16c8a05"
@@ -53,7 +54,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://thirdparty/telemetry/LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
 "
 
-inherit cmake python3native pkgconfig qemu
+inherit cmake python3targetconfig pkgconfig qemu
 
 S = "${WORKDIR}/git"
 EXTRA_OECMAKE += " \
@@ -61,7 +62,6 @@ EXTRA_OECMAKE += " \
                   -DENABLE_OPENCV=OFF \
                   -DENABLE_INTEL_GNA=OFF \
                   -DENABLE_SYSTEM_TBB=ON \
-                  -DPYTHON_EXECUTABLE=${PYTHON} \
                   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
                   -DTHREADING=TBB -DTBB_DIR="${STAGING_LIBDIR}/cmake/TBB" \
                   -DTREAT_WARNING_AS_ERROR=FALSE \
@@ -76,6 +76,7 @@ EXTRA_OECMAKE += " \
                   -DENABLE_SYSTEM_SNAPPY=ON \
                   -DFETCHCONTENT_BASE_DIR="${S}" \
                   -DENABLE_INTEL_NPU=OFF \
+                  -DPYTHON3_CONFIG="python3-config" \
                   "
 EXTRA_OECMAKE:append:aarch64 = " -DARM_COMPUTE_LIB_DIR=${STAGING_LIBDIR} "
 
@@ -83,7 +84,6 @@ DEPENDS += "\
             flatbuffers-native \
             pugixml \
             python3-pybind11 \
-            python3-pybind11-native \
             python3-scons-native \
             qemu-native \
             snappy \
@@ -97,7 +97,7 @@ COMPATIBLE_HOST:libc-musl = "null"
 
 PACKAGECONFIG ?= "samples"
 PACKAGECONFIG[opencl] = "-DENABLE_INTEL_GPU=TRUE, -DENABLE_INTEL_GPU=FALSE, virtual/opencl-icd opencl-headers opencl-clhpp,"
-PACKAGECONFIG[python3] = "-DENABLE_PYTHON=ON -DPYTHON_LIBRARY=${PYTHON_LIBRARY} -DPYTHON_INCLUDE_DIR=${PYTHON_INCLUDE_DIR} -DENABLE_PYTHON_PACKAGING=ON, -DENABLE_PYTHON=OFF, patchelf-native, python3 python3-numpy python3-progress"
+PACKAGECONFIG[python3] = "-DENABLE_PYTHON=ON -DENABLE_PYTHON_PACKAGING=ON, -DENABLE_PYTHON=OFF, patchelf-native, python3 python3-numpy python3-progress"
 PACKAGECONFIG[samples] = "-DENABLE_SAMPLES=ON -DENABLE_COMPILE_TOOL=ON, -DENABLE_SAMPLES=OFF -DENABLE_COMPILE_TOOL=OFF, opencv"
 PACKAGECONFIG[verbose] = "-DVERBOSE_BUILD=1,-DVERBOSE_BUILD=0"
 
