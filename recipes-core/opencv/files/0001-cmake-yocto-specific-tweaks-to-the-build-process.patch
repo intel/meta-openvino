@@ -1,4 +1,4 @@
-From 16c4155655e63d5e5ee1e463b6e29038870c68a8 Mon Sep 17 00:00:00 2001
+From 0328e03adcb2241a64c1883a33eb450606c409f5 Mon Sep 17 00:00:00 2001
 From: Anuj Mittal <anuj.mittal@intel.com>
 Date: Wed, 29 Nov 2023 12:42:57 +0530
 Subject: [PATCH] cmake: yocto specific tweaks to the build process
@@ -9,6 +9,8 @@ Subject: [PATCH] cmake: yocto specific tweaks to the build process
 * Dont try to write triggers for CPack. We package ourselves.
 * Fix the installation path for Python modules when baselib = lib64.
 * python3-config is installed as python3-config in oe-core Python recipe
+* Dont assume that "lib" is always the correct destination. This fixes
+  multilib builds when libdir != /usr/lib
 
 Upstream-Status: Inappropriate
 
@@ -18,8 +20,8 @@ Signed-off-by: Anuj Mittal <anuj.mittal@intel.com>
  cmake/developer_package/packaging/rpm/rpm.cmake            | 2 +-
  cmake/developer_package/target_flags.cmake                 | 4 ++--
  samples/cpp/CMakeLists.txt                                 | 6 +++---
- src/bindings/python/CMakeLists.txt                         | 2 +-
- 5 files changed, 8 insertions(+), 8 deletions(-)
+ src/bindings/python/CMakeLists.txt                         | 4 ++--
+ 5 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/cmake/developer_package/cross_compile/python_helpers.cmake b/cmake/developer_package/cross_compile/python_helpers.cmake
 index a6c7de73937..ad47bb68798 100644
@@ -84,7 +86,7 @@ index 695dbbe7955..612c6e383c1 100644
      # create global target with all samples / demo apps
      if(NOT TARGET ov_samples)
 diff --git a/src/bindings/python/CMakeLists.txt b/src/bindings/python/CMakeLists.txt
-index f075dc21250..035963e6bc2 100644
+index f075dc21250..b84016e184d 100644
 --- a/src/bindings/python/CMakeLists.txt
 +++ b/src/bindings/python/CMakeLists.txt
 @@ -324,7 +324,7 @@ if(ENABLE_PYTHON_PACKAGING)
@@ -95,6 +97,15 @@ index f075dc21250..035963e6bc2 100644
 +    set(ov_install_lib "${ov_python_package_prefix}/${CMAKE_INSTALL_LIBDIR}/${python_versioned_folder}/${ov_site_packages}")
      set(openvino_meta_info_subdir "openvino-${OpenVINO_VERSION}-py${python_xy}.egg-info")
      set(openvino_meta_info_file "${ov_install_lib}/${openvino_meta_info_subdir}/PKG-INFO")
+ 
+@@ -357,7 +357,7 @@ if(ENABLE_PYTHON_PACKAGING)
+     file(GLOB_RECURSE telemetry_files ${OpenVINO_Telemetry_SOURCE_DIR}/*)
+ 
+     set(telemetry_python_package_prefix "${CMAKE_CURRENT_BINARY_DIR}/telemetry/install_${pyversion}")
+-    set(telemetry_install_lib "${telemetry_python_package_prefix}/lib/${python_versioned_folder}/${ov_site_packages}")
++    set(telemetry_install_lib "${telemetry_python_package_prefix}/${CMAKE_INSTALL_LIBDIR}/${python_versioned_folder}/${ov_site_packages}")
+     set(openvino_telemetry_meta_info_subdir "openvino-telemetry-${OpenVINO_VERSION}-py${python_xy}.egg-info")
+     set(openvino_telemetry_meta_info_file "${telemetry_install_lib}/${openvino_telemetry_meta_info_subdir}/PKG-INFO")
  
 -- 
 2.34.1
