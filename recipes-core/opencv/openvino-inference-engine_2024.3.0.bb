@@ -4,7 +4,7 @@ DESCRIPTION = "This toolkit allows developers to deploy pre-trained \
 deep learning models through a high-level C++ Inference Engine API \
 integrated with application logic."
 
-SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2024/2;lfs=0 \
+SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2024/3;lfs=0 \
            git://github.com/openvinotoolkit/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_cpu/thirdparty/onednn;name=mkl;nobranch=1 \
            git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
            git://github.com/herumi/xbyak.git;protocol=https;destsuffix=git/thirdparty/xbyak;name=xbyak;branch=master \
@@ -23,18 +23,18 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0004-fix-python-detection.patch \
            "
 
-SRCREV_openvino = "5c0f38f83f62fdabcdc980fa6dc3ed1ea16c8a05"
-SRCREV_mkl = "373e65b660c0ba274631cf30c422f10606de1618"
-SRCREV_onednn = "37f48519b87cf8b5e5ef2209340a1948c3e87d72"
+SRCREV_openvino = "1e3b88e4e3f89774923e04e845428579f8ffa0fe"
+SRCREV_mkl = "f0f8defe2dff5058391f2a66e775e20b5de33b08"
+SRCREV_onednn = "7ab8ee9adda866d675edeee7a3a6a29b2d0a1572"
 SRCREV_xbyak = "58642e0cdd5cbe12f5d6e05069ddddbc0f5d5383"
 SRCREV_json = "9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03"
 SRCREV_ade = "0e8a2ccdd34f29dba55894f5f3c5179809888b9e"
 SRCREV_protobuf = "fe271ab76f2ad2b2b28c10443865d2af21e27e0e"
 SRCREV_gflags = "e171aa2d15ed9eb17054558e0b3a6a413bb01067"
-SRCREV_zlib = "09155eaa2f9270dc4ed1fa13e2b4b2613e6e4851"
+SRCREV_zlib = "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf"
 SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
 SRCREV_node-api-headers = "186e04b5e40e54d7fd1655bc67081cc483f12488"
-SRCREV_node-addon-api = "39a25bf27788ff7a7ea5c64978c4dcd1e7b9d80d"
+SRCREV_node-addon-api = "d1ba547e91b192152bfc314ab85436de1538b4ec"
 SRCREV_telemetry = "58e16c257a512ec7f451c9fccf9ff455065b285b"
 SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_json_ade_protobuf_gflags_zlib_node-api-headers_node-addon-api_mlas_telemetry"
 
@@ -50,7 +50,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://src/plugins/intel_cpu/thirdparty/onednn/LICENSE;md5=3b64000f6e7d52516017622a37a94ce9 \
                     file://src/plugins/intel_gpu/thirdparty/onednn_gpu/LICENSE;md5=3b64000f6e7d52516017622a37a94ce9 \
                     file://node-api-headers-src/LICENSE;md5=6adb2909701d4605b4b2ae1a9b25d8bd \
-                    file://node-addon-api-src/LICENSE.md;md5=0492ef29a9d558a3e9660e7accc9ca6a \
+                    file://node-addon-api-src/LICENSE.md;md5=fc3ff1120869be6b3cce17f9a06bfe2e \
                     file://thirdparty/telemetry/LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
 "
 
