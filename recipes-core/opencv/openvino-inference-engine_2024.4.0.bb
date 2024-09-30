@@ -4,7 +4,7 @@ DESCRIPTION = "This toolkit allows developers to deploy pre-trained \
 deep learning models through a high-level C++ Inference Engine API \
 integrated with application logic."
 
-SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2024/3;lfs=0 \
+SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2024/4;lfs=0 \
            git://github.com/openvinotoolkit/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_cpu/thirdparty/onednn;name=mkl;nobranch=1 \
            git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
            git://github.com/herumi/xbyak.git;protocol=https;destsuffix=git/thirdparty/xbyak;name=xbyak;branch=master \
@@ -23,10 +23,10 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0004-fix-python-detection.patch \
            "
 
-SRCREV_openvino = "1e3b88e4e3f89774923e04e845428579f8ffa0fe"
-SRCREV_mkl = "f0f8defe2dff5058391f2a66e775e20b5de33b08"
-SRCREV_onednn = "7ab8ee9adda866d675edeee7a3a6a29b2d0a1572"
-SRCREV_xbyak = "58642e0cdd5cbe12f5d6e05069ddddbc0f5d5383"
+SRCREV_openvino = "c3152d32c9c7df71397e5a3aba1d935c49eec598"
+SRCREV_mkl = "c8ae8d96e963bd04214858319fa334968e5e73c9"
+SRCREV_onednn = "4ccd07e3a10e1c08075cf824ac14708245fbc334"
+SRCREV_xbyak = "2ce465bbca46e92dde9c44bbe7940fd7f70e3b97"
 SRCREV_json = "9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03"
 SRCREV_ade = "0e8a2ccdd34f29dba55894f5f3c5179809888b9e"
 SRCREV_protobuf = "fe271ab76f2ad2b2b28c10443865d2af21e27e0e"
@@ -35,7 +35,7 @@ SRCREV_zlib = "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf"
 SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
 SRCREV_node-api-headers = "186e04b5e40e54d7fd1655bc67081cc483f12488"
 SRCREV_node-addon-api = "d1ba547e91b192152bfc314ab85436de1538b4ec"
-SRCREV_telemetry = "58e16c257a512ec7f451c9fccf9ff455065b285b"
+SRCREV_telemetry = "8abddc3dbc8beb04a39b5ea40cbba5020317102f"
 SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_json_ade_protobuf_gflags_zlib_node-api-headers_node-addon-api_mlas_telemetry"
 
 LICENSE = "Apache-2.0 & MIT & BSD-3-Clause & Zlib"
