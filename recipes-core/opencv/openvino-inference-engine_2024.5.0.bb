@@ -4,7 +4,7 @@ DESCRIPTION = "This toolkit allows developers to deploy pre-trained \
 deep learning models through a high-level C++ Inference Engine API \
 integrated with application logic."
 
-SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2024/4;lfs=0 \
+SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2024/5;lfs=0 \
            git://github.com/openvinotoolkit/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_cpu/thirdparty/onednn;name=mkl;nobranch=1 \
            git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
            git://github.com/herumi/xbyak.git;protocol=https;destsuffix=git/thirdparty/xbyak;name=xbyak;branch=master \
@@ -23,9 +23,9 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0004-fix-python-detection.patch \
            "
 
-SRCREV_openvino = "c3152d32c9c7df71397e5a3aba1d935c49eec598"
-SRCREV_mkl = "c8ae8d96e963bd04214858319fa334968e5e73c9"
-SRCREV_onednn = "4ccd07e3a10e1c08075cf824ac14708245fbc334"
+SRCREV_openvino = "db64e5c66a9fdede7ecb8473b399ac94210f5136"
+SRCREV_mkl = "c60a9946aa2386890e5c9f5587974facb7624227"
+SRCREV_onednn = "1722066ad4c0f15495f2d0fcbe9deb2bfd188c36"
 SRCREV_xbyak = "2ce465bbca46e92dde9c44bbe7940fd7f70e3b97"
 SRCREV_json = "9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03"
 SRCREV_ade = "0e8a2ccdd34f29dba55894f5f3c5179809888b9e"
