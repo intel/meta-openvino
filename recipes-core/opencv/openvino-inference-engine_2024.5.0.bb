@@ -92,7 +92,7 @@ DEPENDS += "\
 DEPENDS:append:aarch64 = " arm-compute-library"
 
 
-#COMPATIBLE_HOST = '(x86_64).*-linux'
+COMPATIBLE_HOST = '(x86_64).*-linux'
 COMPATIBLE_HOST:libc-musl = "null"
 
 PACKAGECONFIG ?= "samples"
