@@ -1,0 +1,31 @@
+From 1fcf94b58e2f61119b9ba65815072ea53c115e8a Mon Sep 17 00:00:00 2001
+From: Yogesh Tyagi <yogesh.tyagi@intel.com>
+Date: Wed, 4 Dec 2024 17:08:05 +0530
+Subject: [PATCH] Don't detect arm compute library version
+
+* Don't try to detect arm compute library version. We are building ACL
+  separately.
+
+Upstream-Status: Inappropriate
+
+Signed-off-by: Yogesh Tyagi <yogesh.tyagi@intel.com>
+---
+ src/plugins/intel_cpu/thirdparty/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/plugins/intel_cpu/thirdparty/CMakeLists.txt b/src/plugins/intel_cpu/thirdparty/CMakeLists.txt
+index 8ba38985d59..fd80eeb1094 100644
+--- a/src/plugins/intel_cpu/thirdparty/CMakeLists.txt
++++ b/src/plugins/intel_cpu/thirdparty/CMakeLists.txt
+@@ -131,7 +131,7 @@ function(ov_add_onednn)
+         list(APPEND CMAKE_MODULE_PATH "${intel_cpu_thirdparty_SOURCE_DIR}")
+         # oneDNN needs arm_compute_version.embed file to detect ACL version
+         # since the file has not been generated yet, it is created manually
+-        ov_create_acl_version_file()
++	#ov_create_acl_version_file()
+     endif()
+ 
+     add_subdirectory(onednn EXCLUDE_FROM_ALL)
+-- 
+2.43.0
+

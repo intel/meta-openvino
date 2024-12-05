@@ -21,6 +21,7 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0002-cmake-Fix-overloaded-virtual-error.patch \
            file://0003-protobuf-allow-target-protoc-to-be-built.patch \
            file://0004-fix-python-detection.patch \
+           file://0004-Don-t-detect-arm-compute-library-version.patch \
            "
 
 SRCREV_openvino = "db64e5c66a9fdede7ecb8473b399ac94210f5136"
