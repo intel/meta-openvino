@@ -97,4 +97,4 @@ If the image build is successful, it will return the list of packages as below:
 
 ```
 
-To create image for IA using meta-intel layer follow the [OpenVINO official documentation](https://docs.openvino.ai/archive/2023.2/openvino_docs_install_guides_installing_openvino_yocto.html).
+To create image for IA using meta-intel layer follow the [OpenVINO official documentation](https://docs.openvino.ai/2025/get-started/install-openvino/install-openvino-yocto.html).
