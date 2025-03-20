@@ -22,6 +22,7 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0003-protobuf-allow-target-protoc-to-be-built.patch \
            file://0004-fix-python-detection.patch \
            file://0004-Don-t-detect-arm-compute-library-version.patch \
+           file://0001-intel_cpu-remove-executable-stack-flag-from-libopenv.patch \
            "
 
 SRCREV_openvino = "1f68be9f5945f2a239ada580e62c992d820f9cb7"

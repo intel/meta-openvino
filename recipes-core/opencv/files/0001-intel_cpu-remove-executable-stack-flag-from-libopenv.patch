@@ -1,0 +1,59 @@
+From c4d31045d681bb53fa7f318892e90ce99e7b1f9a Mon Sep 17 00:00:00 2001
+From: Yi Zhao <yi.zhao@windriver.com>
+Date: Thu, 20 Mar 2025 11:06:38 +0800
+Subject: [PATCH] intel_cpu: remove executable stack flag from
+ libopenvino_intel_cpu_plugin.so
+
+Some openvino samples (e.g hello_query_device) don't work for glibc
+2.41.
+
+For example:
+root@qemux86-64:~# /usr/bin/hello_query_device
+[ INFO ] Build .................................  2025.0.0-17942-1f68be9f594-releases/2025/0
+[ INFO ]
+[ INFO ] Available devices:
+
+The device list is empty.
+
+This issue is intorduced by commit[1] in glibc 2.41. The root cause is
+libopenvino_intel_cpu_plugin.so still has executable stack flag:
+
+root@qemux86-64:~# readelf -l /usr/lib/openvino-2025.0.0/libopenvino_intel_cpu_plugin.so | grep -A1 GNU_STACK
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RWE    0x10
+
+We can also find the following warning in compilation log:
+  ld: warning: ConvSymKernelAvx512Core.S.o: missing .note.GNU-stack section implies executable stack
+  ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+
+Pass "noexecstack" to linker to remove executable stack flag.
+
+After the patch:
+root@qemux86-64:~# readelf -l /usr/lib/openvino-2025.0.0/libopenvino_intel_cpu_plugin.so | grep -A1 GNU_STACK
+  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
+                 0x0000000000000000 0x0000000000000000  RW     0x10
+
+[1] https://sourceware.org/git/?p=glibc.git;a=patch;h=0ca8785a28515291d4ef074b5b6cfb27434c1d2b
+
+Upstream-Status: Pending
+
+Signed-off-by: Yi Zhao <yi.zhao@windriver.com>
+---
+ src/plugins/intel_cpu/CMakeLists.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/plugins/intel_cpu/CMakeLists.txt b/src/plugins/intel_cpu/CMakeLists.txt
+index 5d66a4db8b6..3aa42a457e8 100644
+--- a/src/plugins/intel_cpu/CMakeLists.txt
++++ b/src/plugins/intel_cpu/CMakeLists.txt
+@@ -32,6 +32,7 @@ elseif(CMAKE_COMPILER_IS_GNUCXX)
+     if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 11)
+         ov_add_compiler_flags(-Wno-array-bounds)
+     endif()
++    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-z,noexecstack")
+ elseif (OV_COMPILER_IS_INTEL_LLVM AND WIN32)
+     ov_add_compiler_flags("/Wno-microsoft-include")
+ endif()
+-- 
+2.34.1
+
