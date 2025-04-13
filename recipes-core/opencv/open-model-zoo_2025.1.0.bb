@@ -4,11 +4,11 @@ DESCRIPTION = "This repository includes optimized deep learning \
 models and a set of demos to expedite development of high-performance \
 deep learning inference applications."
 
-SRC_URI = "git://github.com/opencv/open_model_zoo.git;protocol=https;branch=releases/2025/0 \
+SRC_URI = "git://github.com/opencv/open_model_zoo.git;protocol=https;branch=releases/2025/1 \
            file://0001-use-oe-gflags.patch \
            "
 
-SRCREV = "c5893b11ba0ffd24690c7143b66c10204b866d7a"
+SRCREV = "cf0b5623388ed24b9ed7965d22535d2038447aed"
 
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
