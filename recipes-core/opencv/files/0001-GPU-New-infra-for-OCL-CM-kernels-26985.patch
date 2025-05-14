@@ -1,0 +1,28 @@
+From 10f5087e3c580b738bbaeb203ca24f58359c8ff7 Mon Sep 17 00:00:00 2001
+From: Yogesh Tyagi <yogesh.tyagi@intel.com>
+Date: Thu, 15 May 2025 18:15:04 +0800
+Subject: [PATCH] Backport part of the patch to fix build issue with gcc-15
+
+Upstream-Status: Backport [https://github.com/openvinotoolkit/openvino/commit/53d26c22163d527778739c1d7042aaba617cd3be]
+
+Signed-off-by: Vladimir Paramuzov <vladimir.paramuzov@intel.com>
+
+---
+ src/plugins/intel_gpu/src/graph/include/primitive_inst.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/plugins/intel_gpu/src/graph/include/primitive_inst.h b/src/plugins/intel_gpu/src/graph/include/primitive_inst.h
+index 4cbce44c22f..d4e3de3df7d 100644
+--- a/src/plugins/intel_gpu/src/graph/include/primitive_inst.h
++++ b/src/plugins/intel_gpu/src/graph/include/primitive_inst.h
+@@ -514,7 +514,6 @@ struct typed_primitive_impl : public primitive_impl {
+ 
+     using primitive_impl::primitive_impl;
+ 
+-private:
+     event::ptr execute(const std::vector<event::ptr>& event, primitive_inst& instance) override {
+         if (instance.type() != PType::type_id())
+             throw std::invalid_argument("Implementation type does not match primitive type");
+-- 
+2.37.3
+

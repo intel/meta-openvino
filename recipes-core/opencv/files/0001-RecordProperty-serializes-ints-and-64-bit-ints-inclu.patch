@@ -1,0 +1,72 @@
+From 386c7665f5cf1f772f5877cdb32070d8052041a9 Mon Sep 17 00:00:00 2001
+From: Abseil Team <absl-team@google.com>
+Date: Mon, 7 Nov 2022 09:36:17 -0800
+Subject: [PATCH] RecordProperty serializes ints and 64-bit ints, including
+ size_ts
+
+PiperOrigin-RevId: 486685761
+Change-Id: I164d2646e65670d341dbf437ee571953c456677a
+
+Upstream-Status: Backport [https://github.com/google/googletest/commit/386c7665f5cf1f772f5877cdb32070d8052041a9]
+
+---
+ googletest/include/gtest/gtest.h            |  3 ++-
+ googletest/src/gtest.cc                     | 10 ++++------
+ googletest/test/gtest_xml_outfile2_test_.cc |  4 +++-
+ 3 files changed, 9 insertions(+), 8 deletions(-)
+
+Index: gtest/googletest/include/gtest/gtest.h
+===================================================================
+--- gtest.orig/googletest/include/gtest/gtest.h
++++ gtest/googletest/include/gtest/gtest.h
+@@ -53,6 +53,7 @@
+ #define GTEST_INCLUDE_GTEST_GTEST_H_
+ 
+ #include <cstddef>
++#include <cstdint>
+ #include <limits>
+ #include <memory>
+ #include <ostream>
+@@ -459,7 +460,7 @@ class GTEST_API_ Test {
+   // SetUp/TearDown method of Environment objects registered with Google
+   // Test) will be output as attributes of the <testsuites> element.
+   static void RecordProperty(const std::string& key, const std::string& value);
+-  static void RecordProperty(const std::string& key, int value);
++  static void RecordProperty(const std::string& key, int64_t value);
+ 
+  protected:
+   // Creates a Test object.
+Index: gtest/googletest/src/gtest.cc
+===================================================================
+--- gtest.orig/googletest/src/gtest.cc
++++ gtest/googletest/src/gtest.cc
+@@ -2268,12 +2268,10 @@ void Test::TearDown() {
+ void Test::RecordProperty(const std::string& key, const std::string& value) {
+   UnitTest::GetInstance()->RecordProperty(key, value);
+ }
+-
+-// Allows user supplied key value pairs to be recorded for later output.
+-void Test::RecordProperty(const std::string& key, int value) {
+-  Message value_message;
+-  value_message << value;
+-  RecordProperty(key, value_message.GetString().c_str());
++// We do not define a customary serialization except for integers,
++// but other values could be logged in this way.
++void Test::RecordProperty(const std::string& key, int64_t value) {
++  RecordProperty(key, (Message() << value).GetString());
+ }
+ 
+ namespace internal {
+Index: gtest/googletest/test/gtest_xml_outfile2_test_.cc
+===================================================================
+--- gtest.orig/googletest/test/gtest_xml_outfile2_test_.cc
++++ gtest/googletest/test/gtest_xml_outfile2_test_.cc
+@@ -39,5 +39,7 @@ class PropertyTwo : public testing::Test
+ };
+ 
+ TEST_F(PropertyTwo, TestSomeProperties) {
+-  RecordProperty("TestSomeProperty", 2);
++  // Validate we can write an unsigned size_t as a property
++  size_t prop_two = 2;
++  RecordProperty("TestSomeProperty", prop_two);
+ }
