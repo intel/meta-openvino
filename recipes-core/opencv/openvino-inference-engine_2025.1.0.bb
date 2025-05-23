@@ -12,6 +12,7 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            git://github.com/opencv/ade.git;protocol=https;destsuffix=git/thirdparty/ade;name=ade;nobranch=1 \
            git://github.com/protocolbuffers/protobuf.git;protocol=https;destsuffix=git/thirdparty/protobuf/protobuf;name=protobuf;branch=main \
            git://github.com/gflags/gflags.git;protocol=https;destsuffix=git/thirdparty/gflags/gflags;name=gflags;nobranch=1 \
+           git://github.com/openvinotoolkit/googletest.git;protocol=https;destsuffix=git/thirdparty/gtest/gtest;name=gtest;nobranch=1 \
            git://github.com/madler/zlib.git;protocol=https;destsuffix=git/thirdparty/zlib/zlib;name=zlib;nobranch=1 \
            git://github.com/openvinotoolkit/mlas.git;protocol=https;destsuffix=git/src/plugins/intel_cpu/thirdparty/mlas;name=mlas;nobranch=1 \
            git://github.com/nodejs/node-api-headers.git;protocol=https;destsuffix=git/node-api-headers-src;name=node-api-headers;nobranch=1 \
@@ -36,6 +37,7 @@ SRCREV_json = "9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03"
 SRCREV_ade = "0e8a2ccdd34f29dba55894f5f3c5179809888b9e"
 SRCREV_protobuf = "f0dc78d7e6e331b8c6bb2d5283e06aa26883ca7c"
 SRCREV_gflags = "e171aa2d15ed9eb17054558e0b3a6a413bb01067"
+SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
 SRCREV_zlib = "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf"
 SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
 SRCREV_node-api-headers = "186e04b5e40e54d7fd1655bc67081cc483f12488"
