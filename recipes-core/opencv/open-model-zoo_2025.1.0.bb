@@ -16,7 +16,6 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
 
 inherit cmake
 
-S = "${WORKDIR}/git"
 OECMAKE_SOURCEPATH = "${S}/demos"
 
 DEPENDS += "openvino-inference-engine opencv gflags"

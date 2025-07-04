@@ -5,18 +5,18 @@ deep learning models through a high-level C++ Inference Engine API \
 integrated with application logic."
 
 SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2025/1;lfs=0 \
-           git://github.com/openvinotoolkit/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_cpu/thirdparty/onednn;name=mkl;nobranch=1 \
-           git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
-           git://github.com/herumi/xbyak.git;protocol=https;destsuffix=git/thirdparty/xbyak;name=xbyak;branch=master \
-           git://github.com/nlohmann/json.git;protocol=https;destsuffix=git/thirdparty/json/nlohmann_json;name=json;branch=develop \
-           git://github.com/opencv/ade.git;protocol=https;destsuffix=git/thirdparty/ade;name=ade;nobranch=1 \
-           git://github.com/protocolbuffers/protobuf.git;protocol=https;destsuffix=git/thirdparty/protobuf/protobuf;name=protobuf;branch=main \
-           git://github.com/gflags/gflags.git;protocol=https;destsuffix=git/thirdparty/gflags/gflags;name=gflags;nobranch=1 \
-           git://github.com/madler/zlib.git;protocol=https;destsuffix=git/thirdparty/zlib/zlib;name=zlib;nobranch=1 \
-           git://github.com/openvinotoolkit/mlas.git;protocol=https;destsuffix=git/src/plugins/intel_cpu/thirdparty/mlas;name=mlas;nobranch=1 \
-           git://github.com/nodejs/node-api-headers.git;protocol=https;destsuffix=git/node-api-headers-src;name=node-api-headers;nobranch=1 \
-           git://github.com/nodejs/node-addon-api.git;protocol=https;destsuffix=git/node-addon-api-src;name=node-addon-api;nobranch=1 \
-           git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=git/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0 \
+           git://github.com/openvinotoolkit/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_cpu/thirdparty/onednn;name=mkl;nobranch=1 \
+           git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
+           git://github.com/herumi/xbyak.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/xbyak;name=xbyak;branch=master \
+           git://github.com/nlohmann/json.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/json/nlohmann_json;name=json;branch=develop \
+           git://github.com/opencv/ade.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/ade;name=ade;nobranch=1 \
+           git://github.com/protocolbuffers/protobuf.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/protobuf/protobuf;name=protobuf;branch=main \
+           git://github.com/gflags/gflags.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/gflags/gflags;name=gflags;nobranch=1 \
+           git://github.com/madler/zlib.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/zlib/zlib;name=zlib;nobranch=1 \
+           git://github.com/openvinotoolkit/mlas.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_cpu/thirdparty/mlas;name=mlas;nobranch=1 \
+           git://github.com/nodejs/node-api-headers.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/node-api-headers-src;name=node-api-headers;nobranch=1 \
+           git://github.com/nodejs/node-addon-api.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/node-addon-api-src;name=node-addon-api;nobranch=1 \
+           git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0 \
            file://0001-cmake-yocto-specific-tweaks-to-the-build-process.patch \
            file://0002-cmake-Fix-overloaded-virtual-error.patch \
            file://0003-protobuf-allow-target-protoc-to-be-built.patch \
@@ -61,7 +61,6 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
 
 inherit cmake python3targetconfig pkgconfig qemu
 
-S = "${WORKDIR}/git"
 EXTRA_OECMAKE += " \
                   -DCMAKE_CROSSCOMPILING_EMULATOR=${WORKDIR}/qemuwrapper \
                   -DENABLE_OPENCV=OFF \
