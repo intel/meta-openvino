@@ -24,7 +24,6 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0004-Don-t-detect-arm-compute-library-version.patch \
            file://0001-intel_cpu-remove-executable-stack-flag-from-libopenv.patch \
            file://0001-build-Fix-build-issue-using-Fedora-and-gcc-15-29880.patch \
-           file://0001-RecordProperty-serializes-ints-and-64-bit-ints-inclu.patch;patchdir=thirdparty/gtest/gtest \
            file://0001-GPU-New-infra-for-OCL-CM-kernels-26985.patch \
            "
 
