@@ -5,19 +5,19 @@ deep learning models through a high-level C++ Inference Engine API \
 integrated with application logic."
 
 SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2025/1;lfs=0 \
-           git://github.com/openvinotoolkit/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_cpu/thirdparty/onednn;name=mkl;nobranch=1 \
-           git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=git/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
-           git://github.com/herumi/xbyak.git;protocol=https;destsuffix=git/thirdparty/xbyak;name=xbyak;branch=master \
-           git://github.com/nlohmann/json.git;protocol=https;destsuffix=git/thirdparty/json/nlohmann_json;name=json;branch=develop \
-           git://github.com/opencv/ade.git;protocol=https;destsuffix=git/thirdparty/ade;name=ade;nobranch=1 \
-           git://github.com/protocolbuffers/protobuf.git;protocol=https;destsuffix=git/thirdparty/protobuf/protobuf;name=protobuf;branch=main \
-           git://github.com/gflags/gflags.git;protocol=https;destsuffix=git/thirdparty/gflags/gflags;name=gflags;nobranch=1 \
-           git://github.com/openvinotoolkit/googletest.git;protocol=https;destsuffix=git/thirdparty/gtest/gtest;name=gtest;nobranch=1 \
-           git://github.com/madler/zlib.git;protocol=https;destsuffix=git/thirdparty/zlib/zlib;name=zlib;nobranch=1 \
-           git://github.com/openvinotoolkit/mlas.git;protocol=https;destsuffix=git/src/plugins/intel_cpu/thirdparty/mlas;name=mlas;nobranch=1 \
-           git://github.com/nodejs/node-api-headers.git;protocol=https;destsuffix=git/node-api-headers-src;name=node-api-headers;nobranch=1 \
-           git://github.com/nodejs/node-addon-api.git;protocol=https;destsuffix=git/node-addon-api-src;name=node-addon-api;nobranch=1 \
-           git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=git/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0 \
+           git://github.com/openvinotoolkit/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_cpu/thirdparty/onednn;name=mkl;nobranch=1 \
+           git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
+           git://github.com/herumi/xbyak.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/xbyak;name=xbyak;branch=master \
+           git://github.com/nlohmann/json.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/json/nlohmann_json;name=json;branch=develop \
+           git://github.com/opencv/ade.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/ade;name=ade;nobranch=1 \
+           git://github.com/protocolbuffers/protobuf.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/protobuf/protobuf;name=protobuf;branch=main \
+           git://github.com/gflags/gflags.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/gflags/gflags;name=gflags;nobranch=1 \
+           git://github.com/madler/zlib.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/zlib/zlib;name=zlib;nobranch=1 \
+           git://github.com/openvinotoolkit/mlas.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_cpu/thirdparty/mlas;name=mlas;nobranch=1 \
+           git://github.com/nodejs/node-api-headers.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/node-api-headers-src;name=node-api-headers;nobranch=1 \
+           git://github.com/nodejs/node-addon-api.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/node-addon-api-src;name=node-addon-api;nobranch=1 \
+           git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0 \
+           git://github.com/openvinotoolkit/googletest.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/gtest/gtest;name=gtest;nobranch=1;lfs=0 \
            file://0001-cmake-yocto-specific-tweaks-to-the-build-process.patch \
            file://0002-cmake-Fix-overloaded-virtual-error.patch \
            file://0003-protobuf-allow-target-protoc-to-be-built.patch \
@@ -43,7 +43,8 @@ SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
 SRCREV_node-api-headers = "186e04b5e40e54d7fd1655bc67081cc483f12488"
 SRCREV_node-addon-api = "d1ba547e91b192152bfc314ab85436de1538b4ec"
 SRCREV_telemetry = "8abddc3dbc8beb04a39b5ea40cbba5020317102f"
-SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_json_ade_protobuf_gflags_zlib_node-api-headers_node-addon-api_mlas_telemetry"
+SRCREV_gtest = "d269d902e4c3cd02f3e731e1e2ff8307352817a4"
+SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_json_ade_protobuf_gflags_zlib_node-api-headers_node-addon-api_mlas_telemetry_gtest"
 
 LICENSE = "Apache-2.0 & MIT & BSD-3-Clause & Zlib"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
@@ -59,11 +60,11 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://node-api-headers-src/LICENSE;md5=6adb2909701d4605b4b2ae1a9b25d8bd \
                     file://node-addon-api-src/LICENSE.md;md5=fc3ff1120869be6b3cce17f9a06bfe2e \
                     file://thirdparty/telemetry/LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
+                    file://thirdparty/gtest/gtest/LICENSE;md5=cbbd27594afd089daa160d3a16dd515a \
 "
 
 inherit cmake python3targetconfig pkgconfig qemu
 
-S = "${WORKDIR}/git"
 EXTRA_OECMAKE += " \
                   -DCMAKE_CROSSCOMPILING_EMULATOR=${WORKDIR}/qemuwrapper \
                   -DENABLE_OPENCV=OFF \

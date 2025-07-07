@@ -16,7 +16,8 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
 
 inherit cmake
 
-S = "${WORKDIR}/git"
+S = "${UNPACKDIR}/${BP}"
+
 OECMAKE_SOURCEPATH = "${S}/demos"
 
 DEPENDS += "openvino-inference-engine opencv gflags"
@@ -45,15 +46,15 @@ do_install(){
         install -d ${D}${datadir}/openvino/open-model-zoo/tools
         install -d ${D}${datadir}/openvino/open-model-zoo/demos
         if [ "${TARGET_ARCH}" = "x86_64" ];then
-            cp -rf ${WORKDIR}/build/intel64/Release/*.a ${D}${libdir}
-            cp -rf ${WORKDIR}/build/intel64/Release/*_demo* ${D}${bindir}
+            cp -rf ${B}/intel64/Release/*.a ${D}${libdir}
+            cp -rf ${B}/intel64/Release/*_demo* ${D}${bindir}
         else
-            cp -rf ${WORKDIR}/build/${TARGET_ARCH}/Release/*.a ${D}${libdir}
-            cp -rf ${WORKDIR}/build/${TARGET_ARCH}/Release/*_demo* ${D}${bindir}
+            cp -rf ${B}/${TARGET_ARCH}/Release/*.a ${D}${libdir}
+            cp -rf ${B}/${TARGET_ARCH}/Release/*_demo* ${D}${bindir}
         fi
-        cp -rf ${WORKDIR}/git/models ${D}${datadir}/openvino/open-model-zoo
-        cp -rf ${WORKDIR}/git/demos ${D}${datadir}/openvino/open-model-zoo
-        cp -rf ${WORKDIR}/git/tools/model_tools ${D}${datadir}/openvino/open-model-zoo/tools
+        cp -rf ${S}/models ${D}${datadir}/openvino/open-model-zoo
+        cp -rf ${S}/demos ${D}${datadir}/openvino/open-model-zoo
+        cp -rf ${S}/tools/model_tools ${D}${datadir}/openvino/open-model-zoo/tools
 }
 
 FILES:${PN} += "${datadir}/openvino"
