@@ -86,6 +86,7 @@ EXTRA_OECMAKE += " \
                   -DENABLE_INTEL_NPU=OFF \
                   -DPYTHON3_CONFIG="python3-config" \
                   -DENABLE_OV_JAX_FRONTEND=OFF \
+                  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
                   "
 EXTRA_OECMAKE:append:aarch64 = " -DARM_COMPUTE_LIB_DIR=${STAGING_LIBDIR} "
 
