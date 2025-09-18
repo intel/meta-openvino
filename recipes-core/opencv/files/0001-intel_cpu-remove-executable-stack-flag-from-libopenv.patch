@@ -46,14 +46,15 @@ diff --git a/src/plugins/intel_cpu/CMakeLists.txt b/src/plugins/intel_cpu/CMakeL
 index 5d66a4db8b6..3aa42a457e8 100644
 --- a/src/plugins/intel_cpu/CMakeLists.txt
 +++ b/src/plugins/intel_cpu/CMakeLists.txt
-@@ -32,6 +32,7 @@ elseif(CMAKE_COMPILER_IS_GNUCXX)
-     if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 11)
-         ov_add_compiler_flags(-Wno-array-bounds)
-     endif()
-+    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-z,noexecstack")
+@@ -19,6 +19,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+     ov_add_compiler_flags(/wd4146)
  elseif (OV_COMPILER_IS_INTEL_LLVM AND WIN32)
      ov_add_compiler_flags("/Wno-microsoft-include")
++elseif(CMAKE_COMPILER_IS_GNUCXX)
++    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-z,noexecstack")
  endif()
+ if(NOT BUILD_SHARED_LIBS)
+     # Symbols are located in both src and include folders
 -- 
 2.34.1
 

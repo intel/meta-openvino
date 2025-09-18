@@ -17,7 +17,7 @@ diff --git a/src/plugins/intel_cpu/thirdparty/CMakeLists.txt b/src/plugins/intel
 index 8ba38985d59..fd80eeb1094 100644
 --- a/src/plugins/intel_cpu/thirdparty/CMakeLists.txt
 +++ b/src/plugins/intel_cpu/thirdparty/CMakeLists.txt
-@@ -131,7 +131,7 @@ function(ov_add_onednn)
+@@ -140,7 +140,7 @@ function(ov_add_onednn)
          list(APPEND CMAKE_MODULE_PATH "${intel_cpu_thirdparty_SOURCE_DIR}")
          # oneDNN needs arm_compute_version.embed file to detect ACL version
          # since the file has not been generated yet, it is created manually
@@ -25,7 +25,7 @@ index 8ba38985d59..fd80eeb1094 100644
 +	#ov_create_acl_version_file()
      endif()
  
-     add_subdirectory(onednn EXCLUDE_FROM_ALL)
+     # Workaround for ARM compiler flag conflicts: oneDNN sets -mcpu=generic which conflicts
 -- 
 2.43.0
 

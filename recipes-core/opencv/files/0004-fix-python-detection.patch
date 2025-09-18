@@ -22,7 +22,7 @@ Index: git/cmake/developer_package/cross_compile/python_helpers.cmake
 ===================================================================
 --- git.orig/cmake/developer_package/cross_compile/python_helpers.cmake
 +++ git/cmake/developer_package/cross_compile/python_helpers.cmake
-@@ -18,14 +18,18 @@ function(ov_detect_python_module_extensi
+@@ -18,14 +18,18 @@ function(ov_detect_python_module_extension)
          return()
      endif()
  
@@ -44,11 +44,11 @@ Index: git/cmake/developer_package/cross_compile/python_helpers.cmake
 +        endif()
      else()
 -        message(WARNING "Python cross-compilation warning: ${OV_ARCH} is unknown for python build. Please, specify PYTHON_MODULE_EXTENSION explicitly")
-+	set(python3_config ${PYTHON3_CONFIG})
++        set(python3_config ${PYTHON3_CONFIG})
      endif()
  
      find_host_program(python3_config_exec NAMES ${python3_config})
-@@ -55,20 +59,20 @@ macro(ov_find_python3 find_package_mode)
+@@ -68,13 +72,13 @@ macro(ov_find_python3 find_package_mode)
          set(python3_development_component Development)
      endif()
  
@@ -59,24 +59,28 @@ Index: git/cmake/developer_package/cross_compile/python_helpers.cmake
 -        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
 -        ov_cross_compile_define_debian_arch()
 -    endif()
-+    #if(CMAKE_CROSSCOMPILING AND LINUX)
-+    #    # allow to find python headers from host in case of cross-compilation
-+    #    # e.g. install libpython3-dev:<foreign arch> and finds its headers
-+    #    set(_old_CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
-+    #    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
-+    #    ov_cross_compile_define_debian_arch()
-+    #endif()
++#    if(CMAKE_CROSSCOMPILING AND LINUX)
++#        # allow to find python headers from host in case of cross-compilation
++#        # e.g. install libpython3-dev:<foreign arch> and finds its headers
++#        set(_old_CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
++#        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
++#        ov_cross_compile_define_debian_arch()
++#    endif()
  
      find_package(Python3 ${find_package_mode} COMPONENTS Interpreter ${python3_development_component})
+ 
+@@ -88,10 +92,10 @@ macro(ov_find_python3 find_package_mode)
+     endif()
+ 
  
 -    if(CMAKE_CROSSCOMPILING AND LINUX)
 -        ov_cross_compile_define_debian_arch_reset()
 -        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${_old_CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
 -    endif()
-+    #if(CMAKE_CROSSCOMPILING AND LINUX)
-+    #    ov_cross_compile_define_debian_arch_reset()
-+    #    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${_old_CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
-+    #endif()
++#    if(CMAKE_CROSSCOMPILING AND LINUX)
++#        ov_cross_compile_define_debian_arch_reset()
++#        set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ${_old_CMAKE_FIND_ROOT_PATH_MODE_INCLUDE})
++#    endif()
  
      unset(python3_development_component)
  endmacro()
