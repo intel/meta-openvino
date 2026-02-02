@@ -65,6 +65,12 @@ Follow the [Yocto Project official documentation](https://docs.yoctoproject.org/
 
 ```
 
+> **Note**: If you are also using `meta-intel` layer, on scarthgap - there is duplication of `openvino-inference-engine` recipie ([link](https://git.yoctoproject.org/meta-intel/tree/dynamic-layers/openembedded-layer/recipes-support/opencv/openvino-inference-engine_2024.1.0.bb?h=scarthgap)). To use the one from meta-openvino layer - please increase priority to be above meta-intel, e.g.:
+
+```
+BBFILE_PRIORITY_openvino = "8"
+```
+
 ## Step 2: Build a Yocto Image with OpenVINO Packages
 
 Run BitBake to build your image with OpenVINO packages. For example, to build the minimal image, run the following command:
