@@ -9,7 +9,6 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
            git://github.com/herumi/xbyak.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/xbyak;name=xbyak;branch=master \
            git://github.com/protocolbuffers/protobuf.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/protobuf/protobuf;name=protobuf;branch=main \
-           git://github.com/madler/zlib.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/zlib/zlib;name=zlib;nobranch=1 \
            git://github.com/openvinotoolkit/mlas.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_cpu/thirdparty/mlas;name=mlas;nobranch=1 \
            git://github.com/nodejs/node-api-headers.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/node-api-headers-src;name=node-api-headers;nobranch=1 \
            git://github.com/nodejs/node-addon-api.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/node-addon-api-src;name=node-addon-api;nobranch=1 \
@@ -32,19 +31,17 @@ SRCREV_onednn = "29d64fe0ec0f1f20d7f80aa76630d58a6011a869"
 SRCREV_xbyak = "0d67fd1530016b7c56f3cd74b3fca920f4c3e2b4"
 SRCREV_protobuf = "f0dc78d7e6e331b8c6bb2d5283e06aa26883ca7c"
 SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
-SRCREV_zlib = "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf"
 SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
 SRCREV_node-api-headers = "1294543dc1487389acc9cf2371572f57e1eb797d"
 SRCREV_node-addon-api = "6babc960154752f686a7dca8e712991a976a754b"
 SRCREV_telemetry = "8abddc3dbc8beb04a39b5ea40cbba5020317102f"
 SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
-SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_protobuf_zlib_node-api-headers_node-addon-api_mlas_telemetry_gtest"
+SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_protobuf_node-api-headers_node-addon-api_mlas_telemetry_gtest"
 
-LICENSE = "Apache-2.0 & MIT & BSD-3-Clause & Zlib"
+LICENSE = "Apache-2.0 & MIT & BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://thirdparty/xbyak/COPYRIGHT;md5=3c98edfaa50a86eeaef4c6109e803f16 \
                     file://thirdparty/cnpy/LICENSE;md5=689f10b06d1ca2d4b1057e67b16cd580 \
-                    file://thirdparty/zlib/zlib/LICENSE;md5=b51a40671bc46e961c0498897742c0b8 \
                     file://src/plugins/intel_cpu/thirdparty/mlas/LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://src/plugins/intel_cpu/thirdparty/onednn/LICENSE;md5=3b64000f6e7d52516017622a37a94ce9 \
                     file://src/plugins/intel_gpu/thirdparty/onednn_gpu/LICENSE;md5=05fda7e0b3a0fe6749e8443316fc9a3f \
@@ -93,6 +90,7 @@ DEPENDS += "\
             qemu-native \
             snappy \
             tbb \
+            zlib \
             "
 DEPENDS:append:aarch64 = " arm-compute-library"
 
