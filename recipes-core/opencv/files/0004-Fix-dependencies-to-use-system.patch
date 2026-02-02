@@ -16,25 +16,19 @@ diff --git a/thirdparty/dependencies.cmake b/thirdparty/dependencies.cmake
 index 3d7f137ec9..7037da5d26 100644
 --- a/thirdparty/dependencies.cmake
 +++ b/thirdparty/dependencies.cmake
-@@ -305,12 +305,16 @@ endif()
+@@ -275,9 +275,13 @@ endif()
  # Gflags
  #
 
--if(ENABLE_SAMPLES OR ENABLE_TESTS OR ENABLE_INTEL_NPU_INTERNAL)
+-if(ENABLE_SAMPLES OR ENABLE_TESTS)
 -    add_subdirectory(thirdparty/gflags EXCLUDE_FROM_ALL)
--    ov_developer_package_export_targets(
--        TARGET gflags
--        INSTALL_INCLUDE_DIRECTORIES "${CMAKE_BINARY_DIR}/thirdparty/gflags/gflags/include/gflags"
--        INSTALL_DESTIONATION "developer_package/include/gflags")
+-    ov_developer_package_export_targets(TARGET gflags)
 +if(ENABLE_SYSTEM_GFLAGS)
 +    find_package(gflags REQUIRED)
 +else()
-+    if(ENABLE_SAMPLES OR ENABLE_TESTS OR ENABLE_INTEL_NPU_INTERNAL)
++    if(ENABLE_SAMPLES OR ENABLE_TESTS)
 +        add_subdirectory(thirdparty/gflags EXCLUDE_FROM_ALL)
-+        ov_developer_package_export_targets(
-+            TARGET gflags
-+            INSTALL_INCLUDE_DIRECTORIES "${CMAKE_BINARY_DIR}/thirdparty/gflags/gflags/include/gflags"
-+            INSTALL_DESTIONATION "developer_package/include/gflags")
++        ov_developer_package_export_targets(TARGET gflags)
 +    endif()
  endif()
 

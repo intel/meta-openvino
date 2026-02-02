@@ -19,7 +19,7 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0001-cmake-yocto-specific-tweaks-to-the-build-process.patch \
            file://0002-cmake-Fix-overloaded-virtual-error.patch \
            file://0003-protobuf-allow-target-protoc-to-be-built.patch \
-           file://0001-Fix-dependencies-to-use-system.patch \
+           file://0004-Fix-dependencies-to-use-system.patch \
            "
 
 SRCREV_openvino = "f4afc983258bcb2592d999ed6700043fdb58ad78"
