@@ -1,0 +1,28 @@
+From dd1caf00ff2a5c645db4c08566a1609f51ac6ac3 Mon Sep 17 00:00:00 2001
+From: Kepka, Krzysztof <krzysztof.kepka@intel.com>
+Date: Tue, 3 Feb 2026 14:16:33 +0000
+Subject: [PATCH] Use system zlib.
+
+Upstream-Status: Pending
+---
+ thirdparty/dependencies.cmake | 6 +++++-
+ 1 file changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/thirdparty/dependencies.cmake b/thirdparty/dependencies.cmake
+index 5801c14c2b..831f13a4a0 100644
+--- a/thirdparty/dependencies.cmake
++++ b/thirdparty/dependencies.cmake
+@@ -135,7 +135,12 @@ endif()
+ #
+ 
+ if(ENABLE_SAMPLES OR ENABLE_TESTS)
+-    add_subdirectory(thirdparty/zlib EXCLUDE_FROM_ALL)
++    if(ENABLE_SYSTEM_ZLIB)
++        find_package(ZLIB REQUIRED)
++        add_library(openvino::zlib ALIAS ZLIB::ZLIB)
++    else()
++        add_subdirectory(thirdparty/zlib EXCLUDE_FROM_ALL)
++    endif()
+ endif()
+ 
+ #

@@ -23,6 +23,7 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0001-intel_cpu-remove-executable-stack-flag-from-libopenv.patch \
            file://0001-RecordProperty-serializes-ints-and-64-bit-ints-inclu.patch;patchdir=thirdparty/gtest/gtest \
            file://0001-Don-t-error-out-on-CI_BUILD_NUMBER-not-defined.patch \
+           file://0005-Use-system-zlib.patch \
            "
 
 SRCREV_openvino = "85e49f27be1b1647a7ec331069b053596d1112f8"
@@ -77,6 +78,7 @@ EXTRA_OECMAKE += " \
                   -DENABLE_OV_JAX_FRONTEND=OFF \
                   -DENABLE_PROFILING_ITT=OFF \
                   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+                  -DENABLE_SYSTEM_ZLIB=ON \
                   "
 EXTRA_OECMAKE:append:aarch64 = " -DARM_COMPUTE_LIB_DIR=${STAGING_LIBDIR} "
 
