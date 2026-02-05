@@ -8,7 +8,6 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            git://github.com/openvinotoolkit/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_cpu/thirdparty/onednn;name=mkl;nobranch=1 \
            git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
            git://github.com/herumi/xbyak.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/xbyak;name=xbyak;branch=master \
-           git://github.com/protocolbuffers/protobuf.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/protobuf/protobuf;name=protobuf;branch=main \
            git://github.com/openvinotoolkit/mlas.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_cpu/thirdparty/mlas;name=mlas;nobranch=1 \
            git://github.com/nodejs/node-api-headers.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/node-api-headers-src;name=node-api-headers;nobranch=1 \
            git://github.com/nodejs/node-addon-api.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/node-addon-api-src;name=node-addon-api;nobranch=1 \
@@ -16,7 +15,6 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            git://github.com/openvinotoolkit/googletest.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/gtest/gtest;name=gtest;nobranch=1;lfs=0 \
            file://0001-cmake-yocto-specific-tweaks-to-the-build-process.patch \
            file://0002-cmake-Fix-overloaded-virtual-error.patch \
-           file://0003-protobuf-allow-target-protoc-to-be-built.patch \
            file://0001-Fix-dependencies-to-use-system.patch \
            file://0004-fix-python-detection.patch \
            file://0004-Don-t-detect-arm-compute-library-version.patch \
@@ -31,14 +29,13 @@ SRCREV_openvino = "85e49f27be1b1647a7ec331069b053596d1112f8"
 SRCREV_mkl = "a4ed4a789b6e0869e4f651bbfeff6878e91d388e"
 SRCREV_onednn = "29d64fe0ec0f1f20d7f80aa76630d58a6011a869"
 SRCREV_xbyak = "0d67fd1530016b7c56f3cd74b3fca920f4c3e2b4"
-SRCREV_protobuf = "f0dc78d7e6e331b8c6bb2d5283e06aa26883ca7c"
 SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
 SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
 SRCREV_node-api-headers = "1294543dc1487389acc9cf2371572f57e1eb797d"
 SRCREV_node-addon-api = "6babc960154752f686a7dca8e712991a976a754b"
 SRCREV_telemetry = "8abddc3dbc8beb04a39b5ea40cbba5020317102f"
 SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
-SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_protobuf_node-api-headers_node-addon-api_mlas_telemetry_gtest"
+SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_node-api-headers_node-addon-api_mlas_telemetry_gtest"
 
 LICENSE = "Apache-2.0 & MIT & BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
@@ -65,6 +62,10 @@ EXTRA_OECMAKE += " \
                   -DTREAT_WARNING_AS_ERROR=FALSE \
                   -DENABLE_DATA=FALSE \
                   -DENABLE_SYSTEM_GFLAGS=ON \
+                  -DENABLE_SYSTEM_PROTOBUF=ON \
+                  -DProtobuf_USE_STATIC_LIBS=OFF \
+                  -DCMAKE_CXX_STANDARD=17 \
+                  -DProtobuf_PROTOC_EXECUTABLE=${STAGING_BINDIR_NATIVE}/protoc \
                   -DENABLE_SYSTEM_PUGIXML=TRUE \
                   -DENABLE_OV_ONNX_FRONTEND=FALSE \
                   -DUSE_BUILD_TYPE_SUBFOLDER=OFF \
@@ -86,6 +87,8 @@ DEPENDS += "\
             flatbuffers-native \
             nlohmann-json \
             gflags \
+            protobuf \
+            protobuf-native \
             pugixml \
             python3-pybind11 \
             python3-scons-native \
