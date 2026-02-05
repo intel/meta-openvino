@@ -8,9 +8,11 @@ Follow the [Yocto Project official documentation](https://docs.yoctoproject.org/
 1. Clone the repositories.
 
 ```
-      git clone https://git.yoctoproject.org/git/poky
-      git clone https://git.openembedded.org/meta-openembedded
-      git clone https://github.com/intel/meta-openvino.git
+      git clone -b scarthgap https://git.yoctoproject.org/poky
+      git clone -b scarthgap https://git.openembedded.org/meta-openembedded
+      git clone -b scarthgap https://git.yoctoproject.org/meta-intel  # for x86 machine
+      git clone -b scarthgap https://github.com/intel/meta-openvino.git
+
 ```
 
 
@@ -29,6 +31,7 @@ Follow the [Yocto Project official documentation](https://docs.yoctoproject.org/
 ```
       bitbake-layers add-layer ../meta-openembedded/meta-oe
       bitbake-layers add-layer ../meta-openembedded/meta-python
+      bitbake-layers add-layer ../meta-intel  # for x86 machine
       bitbake-layers add-layer ../meta-openvino
 
 ```
@@ -68,7 +71,8 @@ Follow the [Yocto Project official documentation](https://docs.yoctoproject.org/
 > **Note**: If you are also using `meta-intel` layer, on scarthgap - there is duplication of `openvino-inference-engine` recipie ([link](https://git.yoctoproject.org/meta-intel/tree/dynamic-layers/openembedded-layer/recipes-support/opencv/openvino-inference-engine_2024.1.0.bb?h=scarthgap)). To use the one from meta-openvino layer - please increase priority to be above meta-intel, e.g.:
 
 ```
-BBFILE_PRIORITY_openvino = "8"
+      BBFILE_PRIORITY_openvino = "8"
+
 ```
 
 ## Step 2: Build a Yocto Image with OpenVINO Packages
