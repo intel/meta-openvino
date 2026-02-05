@@ -1,0 +1,48 @@
+From 34ed105a39faf7a68b22c7844e700c501277aa8f Mon Sep 17 00:00:00 2001
+From: Yongxin Liu <yongxin.liu@windriver.com>
+Date: Wed, 4 Feb 2026 13:27:57 +0800
+Subject: [PATCH] Fix intel NPU plugin build issue with GCC15.
+
+Fix:
+openvino-inference-engine/2025.3.0/sources/openvino-inference-engine-2025.3.0/src/plugins/intel_npu/tools/protopipe/src/graph.hpp:40:5:
+error: 'uint64_t' does not name a type [-Wtemplate-body]
+   40 |     uint64_t operator()(const WeakHandle<T>& handle) const {
+      |     ^~~~~~~~
+
+Reference: https://gcc.gnu.org/gcc-15/porting_to.html
+
+Upstream-Status: Pending
+
+Signed-off-by: Yongxin Liu <yongxin.liu@windriver.com>
+---
+ src/plugins/intel_npu/tools/protopipe/src/graph.hpp              | 1 +
+ src/plugins/intel_npu/tools/protopipe/src/scenario/criterion.hpp | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/src/plugins/intel_npu/tools/protopipe/src/graph.hpp b/src/plugins/intel_npu/tools/protopipe/src/graph.hpp
+index 66aeccbe156..bf599071c54 100644
+--- a/src/plugins/intel_npu/tools/protopipe/src/graph.hpp
++++ b/src/plugins/intel_npu/tools/protopipe/src/graph.hpp
+@@ -12,6 +12,7 @@
+ #include <unordered_map>
+ #include <unordered_set>
+ #include <vector>
++#include <cstdint>
+ 
+ #include "utils/error.hpp"
+ 
+diff --git a/src/plugins/intel_npu/tools/protopipe/src/scenario/criterion.hpp b/src/plugins/intel_npu/tools/protopipe/src/scenario/criterion.hpp
+index 28b440a7b3b..0fb05fb1175 100644
+--- a/src/plugins/intel_npu/tools/protopipe/src/scenario/criterion.hpp
++++ b/src/plugins/intel_npu/tools/protopipe/src/scenario/criterion.hpp
+@@ -6,6 +6,7 @@
+ #pragma once
+ 
+ #include <memory>
++#include <cstdint>
+ 
+ struct ITermCriterion {
+     using Ptr = std::shared_ptr<ITermCriterion>;
+-- 
+2.46.2
+

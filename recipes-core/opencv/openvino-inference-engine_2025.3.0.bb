@@ -41,6 +41,17 @@ SRCREV_telemetry = "8abddc3dbc8beb04a39b5ea40cbba5020317102f"
 SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
 SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_protobuf_gflags_zlib_node-api-headers_node-addon-api_mlas_telemetry_gtest"
 
+# For NPU plugin
+SRC_URI += "git://github.com/oneapi-src/level-zero.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/level_zero/level-zero;name=level-zero;nobranch=1 \
+            git://github.com/intel/level-zero-npu-extensions.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_npu/thirdparty/level-zero-ext;name=level-zero-ext;nobranch=1 \
+            git://github.com/jbeder/yaml-cpp.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_npu/thirdparty/yaml-cpp;name=yaml-cpp;nobranch=1 \
+            file://0001-Fix-intel-NPU-plugin-build-issue-with-GCC15.patch \
+           "
+SRCREV_level-zero = "9402907a3ce6987871325e4e1329e053b8e5cf2b"
+SRCREV_level-zero-ext = "f8bba8915e0a5fe8317f7aa48007ecc5a8c179ca"
+SRCREV_yaml-cpp = "da82fd982c260e7f335ce5acbceff24b270544d1"
+SRCREV_FORMAT += "_level-zero_level-zero-ext_yaml-cpp"
+
 LICENSE = "Apache-2.0 & MIT & BSD-3-Clause & Zlib"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://thirdparty/xbyak/COPYRIGHT;md5=3c98edfaa50a86eeaef4c6109e803f16 \
@@ -76,7 +87,6 @@ EXTRA_OECMAKE += " \
                   -DENABLE_SYSTEM_FLATBUFFERS=ON \
                   -DENABLE_SYSTEM_SNAPPY=ON \
                   -DFETCHCONTENT_BASE_DIR="${S}" \
-                  -DENABLE_INTEL_NPU=OFF \
                   -DPYTHON3_CONFIG="python3-config" \
                   -DENABLE_OV_JAX_FRONTEND=OFF \
                   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
@@ -104,6 +114,7 @@ PACKAGECONFIG[opencl] = "-DENABLE_INTEL_GPU=TRUE, -DENABLE_INTEL_GPU=FALSE, virt
 PACKAGECONFIG[python3] = "-DENABLE_PYTHON=ON -DENABLE_PYTHON_PACKAGING=ON, -DENABLE_PYTHON=OFF, patchelf-native, python3 python3-numpy python3-progress"
 PACKAGECONFIG[samples] = "-DENABLE_SAMPLES=ON -DENABLE_COMPILE_TOOL=ON, -DENABLE_SAMPLES=OFF -DENABLE_COMPILE_TOOL=OFF, opencv"
 PACKAGECONFIG[verbose] = "-DVERBOSE_BUILD=1,-DVERBOSE_BUILD=0"
+PACKAGECONFIG[intel-npu] = "-DENABLE_INTEL_NPU=ON, -DENABLE_INTEL_NPU=OFF"
 
 do_configure:prepend() {
     # Dont set PROJECT_ROOT_DIR
@@ -118,11 +129,15 @@ EOF
     chmod +x ${WORKDIR}/qemuwrapper
 }
 
+NPU_INSTALL_CMD = "find ${B}/src/plugins/intel_npu/src/plugin/cross-compiled/ -type f -name \"*_disp.cpp\" -exec sed -i -e \"s%${S}%${TARGET_DBGSRC_DIR}%g\" {} + || bberror \"Failed to update dispatcher source paths\""
+
 do_install:append() {
     rm -rf ${D}${prefix}/install_dependencies
     rm -rf ${D}${prefix}/setupvars.sh
 
     find ${B}/src/plugins/intel_cpu/cross-compiled/ -type f -name *_disp.cpp -exec sed -i -e 's%'"${S}"'%'"${TARGET_DBGSRC_DIR}"'%g' {} +
+
+    ${@bb.utils.contains('PACKAGECONFIG', 'intel-npu', '${NPU_INSTALL_CMD}', '', d)}
 }
 
 # Otherwise e.g. ros-openvino-toolkit-dynamic-vino-sample when using dldt-inference-engine uses dldt-inference-engine WORKDIR
