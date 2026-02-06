@@ -1,0 +1,72 @@
+From: Krzysztof Kepka <krzysztof.kepka@intel.com>
+Date: Mon, 9 Feb 2026 13:00:00 +0000
+Subject: [PATCH] node-addon: add option to use system Node.js API headers
+
+Add ENABLE_SYSTEM_NODE CMake option to use system-provided Node.js
+API headers instead of downloading them from GitHub during the build.
+This aligns with Linux distribution packaging best practices and
+follows the established pattern used for other system libraries
+(protobuf, zlib, ...).
+
+When ENABLE_SYSTEM_NODE is ON, CMake searches for node_api.h and
+js_native_api.h in standard system include paths. Falls back to the
+original FetchContent download method when OFF (default unchanged).
+
+This enables BitBake recipe to use nodejs package headers from
+meta-openembedded instead of fetching during build, reducing external
+dependencies and aligning with Yocto best practices.
+
+Upstream-Status: Pending
+Signed-off-by: Krzysztof Kepka <krzysztof.kepka@intel.com>
+---
+ src/bindings/js/node/CMakeLists.txt | 30 +++++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
+
+diff --git a/src/bindings/js/node/CMakeLists.txt b/src/bindings/js/node/CMakeLists.txt
+index 8035de0953..b8c8852fef 100644
+--- a/src/bindings/js/node/CMakeLists.txt
++++ b/src/bindings/js/node/CMakeLists.txt
+@@ -29,12 +29,28 @@ add_definitions(-DNAPI_VERSION=6)
+ 
+ include(FetchContent)
+ 
+-FetchContent_Declare(
+-    node-api-headers
+-    URL      https://github.com/nodejs/node-api-headers/archive/refs/tags/v1.1.0.tar.gz
+-    URL_HASH SHA256=70608bc1e6dddce280285f3462f18a106f687c0720a4b90893e1ecd86e5a8bbf
+-)
+-FetchContent_MakeAvailable(node-api-headers)
++option(ENABLE_SYSTEM_NODE "Use system-provided Node.js API headers instead of downloading" OFF)
++
++if(ENABLE_SYSTEM_NODE)
++    find_path(NODE_API_HEADERS_DIR
++        NAMES node_api.h js_native_api.h
++        PATH_SUFFIXES node
++    )
++    if(NOT NODE_API_HEADERS_DIR)
++        message(FATAL_ERROR
++            "System Node.js API headers not found. "
++            "Install the nodejs-dev package or set NODE_API_HEADERS_DIR manually.")
++    endif()
++    message(STATUS "Using system Node.js API headers from: ${NODE_API_HEADERS_DIR}")
++else()
++    FetchContent_Declare(
++        node-api-headers
++        URL      https://github.com/nodejs/node-api-headers/archive/refs/tags/v1.1.0.tar.gz
++        URL_HASH SHA256=70608bc1e6dddce280285f3462f18a106f687c0720a4b90893e1ecd86e5a8bbf
++    )
++    FetchContent_MakeAvailable(node-api-headers)
++    set(NODE_API_HEADERS_DIR "${node-api-headers_SOURCE_DIR}/include")
++endif()
+ 
+ FetchContent_Declare(
+     node-addon-api
+@@ -70,7 +86,7 @@ add_library(${PROJECT_NAME} SHARED
+ )
+ 
+ target_include_directories(${PROJECT_NAME} PRIVATE
+-    "${node-api-headers_SOURCE_DIR}/include"
++    "${NODE_API_HEADERS_DIR}"
+     "${node-addon-api_SOURCE_DIR}"
+     "${CMAKE_CURRENT_SOURCE_DIR}/.."
+ )
