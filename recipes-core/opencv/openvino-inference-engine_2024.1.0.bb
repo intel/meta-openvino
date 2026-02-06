@@ -10,9 +10,9 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            git://github.com/herumi/xbyak.git;protocol=https;destsuffix=git/thirdparty/xbyak;name=xbyak;branch=master \
            git://github.com/opencv/ade.git;protocol=https;destsuffix=git/thirdparty/ade;name=ade;nobranch=1 \
            git://github.com/openvinotoolkit/mlas.git;protocol=https;destsuffix=git/src/plugins/intel_cpu/thirdparty/mlas;name=mlas;nobranch=1 \
-           git://github.com/nodejs/node-api-headers.git;protocol=https;destsuffix=git/node-api-headers-src;name=node-api-headers;nobranch=1 \
            git://github.com/nodejs/node-addon-api.git;protocol=https;destsuffix=git/node-addon-api-src;name=node-addon-api;nobranch=1 \
            git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=git/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0 \
+           file://0001-node-addon-use-system-node-api-headers.patch \
            file://0001-cmake-yocto-specific-tweaks-to-the-build-process.patch \
            file://0002-cmake-Fix-overloaded-virtual-error.patch \
            file://0004-Fix-dependencies-to-use-system.patch \
@@ -25,10 +25,9 @@ SRCREV_onednn = "4e6ff043c439652fcf6c400ac4e0c81bbac7c71c"
 SRCREV_xbyak = "740dff2e866f3ae1a70dd42d6e8836847ed95cc2"
 SRCREV_ade = "0e8a2ccdd34f29dba55894f5f3c5179809888b9e"
 SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
-SRCREV_node-api-headers = "186e04b5e40e54d7fd1655bc67081cc483f12488"
 SRCREV_node-addon-api = "39a25bf27788ff7a7ea5c64978c4dcd1e7b9d80d"
 SRCREV_telemetry = "58e16c257a512ec7f451c9fccf9ff455065b285b"
-SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_node-api-headers_node-addon-api_mlas_telemetry"
+SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_node-addon-api_mlas_telemetry"
 
 LICENSE = "Apache-2.0 & MIT & BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
@@ -38,7 +37,6 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://src/plugins/intel_cpu/thirdparty/mlas/LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://src/plugins/intel_cpu/thirdparty/onednn/LICENSE;md5=3b64000f6e7d52516017622a37a94ce9 \
                     file://src/plugins/intel_gpu/thirdparty/onednn_gpu/LICENSE;md5=3b64000f6e7d52516017622a37a94ce9 \
-                    file://node-api-headers-src/LICENSE;md5=6adb2909701d4605b4b2ae1a9b25d8bd \
                     file://node-addon-api-src/LICENSE.md;md5=0492ef29a9d558a3e9660e7accc9ca6a \
                     file://thirdparty/telemetry/LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
 "
@@ -97,6 +95,7 @@ COMPATIBLE_HOST:libc-musl = "null"
 
 PACKAGECONFIG ?= "samples"
 PACKAGECONFIG[opencl] = "-DENABLE_INTEL_GPU=TRUE, -DENABLE_INTEL_GPU=FALSE, virtual/opencl-icd opencl-headers opencl-clhpp,"
+PACKAGECONFIG[node] = "-DENABLE_JS=ON -DENABLE_SYSTEM_NODE=ON,-DENABLE_JS=OFF, nodejs"
 PACKAGECONFIG[python3] = "-DENABLE_PYTHON=ON -DPYTHON_LIBRARY=${PYTHON_LIBRARY} -DPYTHON_INCLUDE_DIR=${PYTHON_INCLUDE_DIR} -DENABLE_PYTHON_PACKAGING=ON, -DENABLE_PYTHON=OFF, patchelf-native, python3 python3-numpy python3-progress"
 PACKAGECONFIG[samples] = "-DENABLE_SAMPLES=ON -DENABLE_COMPILE_TOOL=ON, -DENABLE_SAMPLES=OFF -DENABLE_COMPILE_TOOL=OFF, opencv"
 PACKAGECONFIG[verbose] = "-DVERBOSE_BUILD=1,-DVERBOSE_BUILD=0"
@@ -119,6 +118,12 @@ do_install:append() {
     rm -rf ${D}${prefix}/setupvars.sh
 
     find ${B}/src/plugins/intel_cpu/cross-compiled/ -type f -name *_disp.cpp -exec sed -i -e 's%'"${S}"'%'"${TARGET_DBGSRC_DIR}"'%g' {} +
+
+    # Install the Node.js addon (excluded from cmake install by CPACK RPM packaging)
+    if [ -f ${S}/bin/intel64/ov_node_addon.node ]; then
+        install -d ${D}${libdir}
+        install -m 0755 ${S}/bin/intel64/ov_node_addon.node ${D}${libdir}/ov_node_addon.node
+    fi
 }
 
 # Otherwise e.g. ros-openvino-toolkit-dynamic-vino-sample when using dldt-inference-engine uses dldt-inference-engine WORKDIR
@@ -146,5 +151,12 @@ RDEPENDS:${PN}-samples += "python3-core"
 PACKAGES =+ "${PN}-python3"
 
 FILES:${PN}-python3 = "${PYTHON_SITEPACKAGES_DIR}"
+
+# Package for Node.js bindings
+PACKAGES =+ "${PN}-node"
+
+FILES:${PN}-node = "${libdir}/ov_node_addon.node"
+
+RDEPENDS:${PN}-node += "nodejs ${PN}"
 
 UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>(\d+\.\d+\.\d+))$"
