@@ -1,0 +1,78 @@
+From 1e73448316b5ec3a4214dbf7c7378a1283f0f03c Mon Sep 17 00:00:00 2001
+From: "Kepka, Krzysztof" <krzysztof.kepka@intel.com>
+Date: Fri, 27 Feb 2026 08:42:05 +0000
+Subject: [PATCH] ittapi: prefer system ittnotify over bundled source
+
+When INTEL_VTUNE_DIR is not set, try to find a system-installed
+ittnotify library (e.g. from meta-intel's itt recipe) using
+find_path/find_library before falling back to the bundled ittapi
+submodule. This allows Yocto builds to use the system itt package
+without requiring VTune.
+
+Upstream-Status: Pending
+Signed-off-by: Kepka, Krzysztof <krzysztof.kepka@intel.com>
+---
+ thirdparty/ittapi/CMakeLists.txt | 45 +++++++++++++++++++++++---------
+ 1 file changed, 32 insertions(+), 13 deletions(-)
+
+diff --git a/thirdparty/ittapi/CMakeLists.txt b/thirdparty/ittapi/CMakeLists.txt
+index 96c79d5cd4..a8283e9429 100644
+--- a/thirdparty/ittapi/CMakeLists.txt
++++ b/thirdparty/ittapi/CMakeLists.txt
+@@ -10,21 +10,40 @@ if(DEFINED INTEL_VTUNE_DIR OR DEFINED ENV{INTEL_VTUNE_DIR})
+         message(WARNING "Profiling option enabled, but no ITT library was found under INTEL_VTUNE_DIR")
+     endif()
+ else()
+-    add_subdirectory(ittapi EXCLUDE_FROM_ALL)
++    # Try to find system ittnotify library first
++    find_path(ITT_INCLUDE_DIR ittnotify.h PATH_SUFFIXES ittnotify)
++    find_library(ITT_LIB NAMES ittnotify)
+ 
+-    target_compile_definitions(ittnotify INTERFACE ENABLE_PROFILING_ITT)
+-    if(CMAKE_COMPILER_IS_GNUCXX OR OV_COMPILER_IS_CLANG)
+-        target_compile_options(ittnotify PRIVATE -Wno-undef)
+-    endif()
++    if(ITT_INCLUDE_DIR AND ITT_LIB)
++        message(STATUS "Found system ittnotify: ${ITT_LIB}")
++        add_library(ittapi::ittnotify STATIC IMPORTED GLOBAL)
++        set_target_properties(ittapi::ittnotify PROPERTIES
++            IMPORTED_LOCATION "${ITT_LIB}"
++            INTERFACE_INCLUDE_DIRECTORIES "${ITT_INCLUDE_DIR}"
++            INTERFACE_COMPILE_DEFINITIONS ENABLE_PROFILING_ITT)
++        if(UNIX)
++            set_target_properties(ittapi::ittnotify PROPERTIES
++                INTERFACE_LINK_LIBRARIES "${CMAKE_DL_LIBS};Threads::Threads")
++        endif()
++    elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/ittapi/CMakeLists.txt")
++        add_subdirectory(ittapi EXCLUDE_FROM_ALL)
++
++        target_compile_definitions(ittnotify INTERFACE ENABLE_PROFILING_ITT)
++        if(CMAKE_COMPILER_IS_GNUCXX OR OV_COMPILER_IS_CLANG)
++            target_compile_options(ittnotify PRIVATE -Wno-undef)
++        endif()
+ 
+-    # override INTERFACE_INCLUDE_DIRECTORIES
+-    set_property(TARGET ittnotify PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+-                    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ittapi/src/ittnotify>
+-                    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ittapi/include>)
++        # override INTERFACE_INCLUDE_DIRECTORIES
++        set_property(TARGET ittnotify PROPERTY INTERFACE_INCLUDE_DIRECTORIES
++                        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ittapi/src/ittnotify>
++                        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ittapi/include>)
+ 
+-    # create alias ittapi::ittnotify
+-    add_library(ittapi::ittnotify ALIAS ittnotify)
++        # create alias ittapi::ittnotify
++        add_library(ittapi::ittnotify ALIAS ittnotify)
+ 
+-    ov_developer_package_export_targets(TARGET ittapi::ittnotify)
+-    ov_install_static_lib(ittnotify ${OV_CPACK_COMP_CORE})
++        ov_developer_package_export_targets(TARGET ittapi::ittnotify)
++        ov_install_static_lib(ittnotify ${OV_CPACK_COMP_CORE})
++    else()
++        message(FATAL_ERROR "ittapi: no system ittnotify library found and no bundled source in ${CMAKE_CURRENT_SOURCE_DIR}/ittapi")
++    endif()
+ endif()
+-- 
+2.34.1
+

@@ -14,7 +14,6 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            git://github.com/nodejs/node-addon-api.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/node-addon-api-src;name=node-addon-api;nobranch=1 \
            git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0 \
            git://github.com/openvinotoolkit/googletest.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/gtest/gtest;name=gtest;nobranch=1;lfs=0 \
-           git://github.com/intel/ittapi.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/ittapi/ittapi;name=ittapi;nobranch=1 \
            file://0001-cmake-yocto-specific-tweaks-to-the-build-process.patch \
            file://0002-cmake-Fix-overloaded-virtual-error.patch \
            file://0003-protobuf-allow-target-protoc-to-be-built.patch \
@@ -25,6 +24,7 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0001-RecordProperty-serializes-ints-and-64-bit-ints-inclu.patch;patchdir=thirdparty/gtest/gtest \
            file://0001-Don-t-error-out-on-CI_BUILD_NUMBER-not-defined.patch \
            file://0005-Use-system-zlib.patch \
+           file://0005-ittapi-prefer-system-ittnotify-over-bundled-source.patch \
            "
 
 SRCREV_openvino = "85e49f27be1b1647a7ec331069b053596d1112f8"
@@ -38,8 +38,7 @@ SRCREV_node-api-headers = "1294543dc1487389acc9cf2371572f57e1eb797d"
 SRCREV_node-addon-api = "6babc960154752f686a7dca8e712991a976a754b"
 SRCREV_telemetry = "8abddc3dbc8beb04a39b5ea40cbba5020317102f"
 SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
-SRCREV_ittapi = "ca45fef1a12cef3316e6ff362a4d36571270e392"
-SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_protobuf_node-api-headers_node-addon-api_mlas_telemetry_gtest_ittapi"
+SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_protobuf_node-api-headers_node-addon-api_mlas_telemetry_gtest"
 
 LICENSE = "Apache-2.0 & MIT & BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
@@ -52,7 +51,6 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://node-addon-api-src/LICENSE.md;md5=fc3ff1120869be6b3cce17f9a06bfe2e \
                     file://thirdparty/telemetry/LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://thirdparty/gtest/gtest/LICENSE;md5=cbbd27594afd089daa160d3a16dd515a \
-                    file://thirdparty/ittapi/ittapi/LICENSES/BSD-3-Clause.txt;md5=c551872bcf41ce707df54c722edeca7b \
 "
 
 inherit cmake python3targetconfig pkgconfig qemu
@@ -103,7 +101,7 @@ DEPENDS:append:aarch64 = " arm-compute-library"
 COMPATIBLE_HOST:libc-musl = "null"
 
 PACKAGECONFIG ?= "samples"
-PACKAGECONFIG[itt] = "-DENABLE_PROFILING_ITT=BASE,-DENABLE_PROFILING_ITT=OFF,"
+PACKAGECONFIG[itt] = "-DENABLE_PROFILING_ITT=BASE, -DENABLE_PROFILING_ITT=OFF, itt,"
 PACKAGECONFIG[opencl] = "-DENABLE_INTEL_GPU=TRUE, -DENABLE_INTEL_GPU=FALSE, virtual/libopencl1 opencl-headers opencl-clhpp,"
 PACKAGECONFIG[python3] = "-DENABLE_PYTHON=ON -DENABLE_PYTHON_PACKAGING=ON, -DENABLE_PYTHON=OFF, patchelf-native, python3 python3-numpy python3-progress"
 PACKAGECONFIG[samples] = "-DENABLE_SAMPLES=ON -DENABLE_COMPILE_TOOL=ON, -DENABLE_SAMPLES=OFF -DENABLE_COMPILE_TOOL=OFF, opencv"
