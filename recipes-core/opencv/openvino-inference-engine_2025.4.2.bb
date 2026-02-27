@@ -4,7 +4,7 @@ DESCRIPTION = "This toolkit allows developers to deploy pre-trained \
 deep learning models through a high-level C++ Inference Engine API \
 integrated with application logic."
 
-SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2025/3;lfs=0 \
+SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=openvino;branch=releases/2025/4;lfs=0 \
            git://github.com/openvinotoolkit/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_cpu/thirdparty/onednn;name=mkl;nobranch=1 \
            git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
            git://github.com/herumi/xbyak.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/xbyak;name=xbyak;branch=master \
@@ -26,9 +26,9 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0001-Don-t-error-out-on-CI_BUILD_NUMBER-not-defined.patch \
            "
 
-SRCREV_openvino = "44526285f241251e9543276572676365fbe542a4"
-SRCREV_mkl = "3d7a6f1d068d8ae08f189aa4baa93d177bc07507"
-SRCREV_onednn = "8edf6bb60fdaa2769f3cebf44bd2ee94da00744c"
+SRCREV_openvino = "85e49f27be1b1647a7ec331069b053596d1112f8"
+SRCREV_mkl = "a4ed4a789b6e0869e4f651bbfeff6878e91d388e"
+SRCREV_onednn = "29d64fe0ec0f1f20d7f80aa76630d58a6011a869"
 SRCREV_xbyak = "0d67fd1530016b7c56f3cd74b3fca920f4c3e2b4"
 SRCREV_protobuf = "f0dc78d7e6e331b8c6bb2d5283e06aa26883ca7c"
 SRCREV_gflags = "e171aa2d15ed9eb17054558e0b3a6a413bb01067"
@@ -79,6 +79,7 @@ EXTRA_OECMAKE += " \
                   -DENABLE_INTEL_NPU=OFF \
                   -DPYTHON3_CONFIG="python3-config" \
                   -DENABLE_OV_JAX_FRONTEND=OFF \
+                  -DENABLE_PROFILING_ITT=OFF \
                   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
                   "
 EXTRA_OECMAKE:append:aarch64 = " -DARM_COMPUTE_LIB_DIR=${STAGING_LIBDIR} "
