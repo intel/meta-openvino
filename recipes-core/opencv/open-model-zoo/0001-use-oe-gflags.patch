@@ -1,4 +1,4 @@
-From 804b08023b3f8e72b8e3eb09e464d6775c11d966 Mon Sep 17 00:00:00 2001
+From 640774f7b76984957d60975fbda976ba2cee6303 Mon Sep 17 00:00:00 2001
 From: Naveen Saini <naveen.kumar.saini@intel.com>
 Date: Fri, 21 Oct 2022 11:38:23 +0800
 Subject: [PATCH] demos: use gflags from meta-oe
@@ -7,16 +7,15 @@ Upstream-Status: Inappropriate
 
 Signed-off-by: Anuj Mittal <anuj.mittal@intel.com>
 Signed-off-by: Naveen Saini <naveen.kumar.saini@intel.com>
-
 ---
  demos/CMakeLists.txt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/demos/CMakeLists.txt b/demos/CMakeLists.txt
-index 51767051c..fb7e3d22f 100644
+index 2cbace70c..237bab185 100644
 --- a/demos/CMakeLists.txt
 +++ b/demos/CMakeLists.txt
-@@ -141,7 +141,7 @@ endmacro()
+@@ -145,7 +145,7 @@ endmacro()
  find_package(OpenCV REQUIRED COMPONENTS core highgui videoio imgproc imgcodecs)
  find_package(OpenVINO REQUIRED COMPONENTS Runtime)
  
