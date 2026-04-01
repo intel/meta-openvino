@@ -51,7 +51,6 @@ EXTRA_OECMAKE += " \
                   -DCMAKE_CXX_STANDARD=17 \
                   -DProtobuf_PROTOC_EXECUTABLE=${STAGING_BINDIR_NATIVE}/protoc \
                   -DENABLE_SYSTEM_PUGIXML=TRUE \
-                  -DENABLE_OV_ONNX_FRONTEND=FALSE \
                   -DUSE_BUILD_TYPE_SUBFOLDER=OFF \
                   -DENABLE_FUZZING=OFF \
                   -DCPACK_GENERATOR=RPM \
@@ -114,6 +113,8 @@ LIC_FILES_CHKSUM += "${@bb.utils.contains('PACKAGECONFIG', 'tests', \
     '', d)}"
 LDFLAGS:append = "${@bb.utils.contains('PACKAGECONFIG', 'tests', ' -Wl,--allow-shlib-undefined', '', d)}"
 
+# Frontends
+PACKAGECONFIG[onnx] = "-DENABLE_OV_ONNX_FRONTEND=ON, -DENABLE_OV_ONNX_FRONTEND=OFF,,"
 PACKAGECONFIG[tf] = "-DENABLE_OV_TF_FRONTEND=ON, -DENABLE_OV_TF_FRONTEND=OFF, protobuf protobuf-native snappy abseil-cpp,"
 PACKAGECONFIG[tflite] = "-DENABLE_OV_TF_LITE_FRONTEND=ON, -DENABLE_OV_TF_LITE_FRONTEND=OFF, flatbuffers-native,"
 PACKAGECONFIG[paddle] = "-DENABLE_OV_PADDLE_FRONTEND=ON, -DENABLE_OV_PADDLE_FRONTEND=OFF, protobuf protobuf-native abseil-cpp,"
