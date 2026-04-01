@@ -53,9 +53,7 @@ EXTRA_OECMAKE += " \
                   -DCMAKE_CROSSCOMPILING_EMULATOR=${WORKDIR}/qemuwrapper \
                   -DENABLE_OPENCV=OFF \
                   -DENABLE_INTEL_GNA=OFF \
-                  -DENABLE_SYSTEM_TBB=ON \
                   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-                  -DTHREADING=TBB -DTBB_DIR="${STAGING_LIBDIR}/cmake/TBB" \
                   -DTREAT_WARNING_AS_ERROR=FALSE \
                   -DENABLE_DATA=FALSE \
                   -DENABLE_SYSTEM_GFLAGS=ON \
@@ -67,7 +65,6 @@ EXTRA_OECMAKE += " \
                   -DENABLE_OV_ONNX_FRONTEND=FALSE \
                   -DUSE_BUILD_TYPE_SUBFOLDER=OFF \
                   -DENABLE_FUZZING=OFF \
-                  -DENABLE_TBBBIND_2_5=OFF \
                   -DCPACK_GENERATOR=RPM \
                   -DENABLE_SYSTEM_FLATBUFFERS=ON \
                   -DENABLE_SYSTEM_SNAPPY=ON \
@@ -91,7 +88,6 @@ DEPENDS += "\
             python3-scons-native \
             qemu-native \
             snappy \
-            tbb \
             zlib \
             "
 DEPENDS:append:aarch64 = " arm-compute-library"
@@ -100,7 +96,11 @@ DEPENDS:append:aarch64 = " arm-compute-library"
 #COMPATIBLE_HOST = '(x86_64).*-linux'
 COMPATIBLE_HOST:libc-musl = "null"
 
-PACKAGECONFIG ?= "samples"
+PACKAGECONFIG ?= "tbb samples"
+# Threading models (mutually exclusive — enable only one)
+PACKAGECONFIG[tbb] = "-DTHREADING=TBB -DENABLE_SYSTEM_TBB=ON -DTBB_DIR='${STAGING_LIBDIR}/cmake/TBB' -DENABLE_TBBBIND_2_5=OFF, , tbb,"
+PACKAGECONFIG[omp] = "-DTHREADING=OMP, , ,"
+PACKAGECONFIG[seq] = "-DTHREADING=SEQ, , ,"
 PACKAGECONFIG[itt] = "-DENABLE_PROFILING_ITT=BASE, -DENABLE_PROFILING_ITT=OFF, itt,"
 PACKAGECONFIG[opencl] = "-DENABLE_INTEL_GPU=TRUE, -DENABLE_INTEL_GPU=FALSE, virtual/libopencl1 opencl-headers opencl-clhpp,"
 PACKAGECONFIG[python3] = "-DENABLE_PYTHON=ON -DENABLE_PYTHON_PACKAGING=ON, -DENABLE_PYTHON=OFF, patchelf-native, python3 python3-numpy python3-progress"
