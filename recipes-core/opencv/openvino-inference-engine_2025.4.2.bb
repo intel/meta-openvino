@@ -59,7 +59,6 @@ EXTRA_OECMAKE += " \
                   -DFETCHCONTENT_BASE_DIR="${S}" \
                   -DENABLE_INTEL_NPU=OFF \
                   -DPYTHON3_CONFIG="python3-config" \
-                  -DENABLE_OV_JAX_FRONTEND=OFF \
                   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
                   -DENABLE_SYSTEM_ZLIB=ON \
                   "
@@ -119,6 +118,7 @@ PACKAGECONFIG[tf] = "-DENABLE_OV_TF_FRONTEND=ON, -DENABLE_OV_TF_FRONTEND=OFF, pr
 PACKAGECONFIG[tflite] = "-DENABLE_OV_TF_LITE_FRONTEND=ON, -DENABLE_OV_TF_LITE_FRONTEND=OFF, flatbuffers-native,"
 PACKAGECONFIG[paddle] = "-DENABLE_OV_PADDLE_FRONTEND=ON, -DENABLE_OV_PADDLE_FRONTEND=OFF, protobuf protobuf-native abseil-cpp,"
 PACKAGECONFIG[pytorch] = "-DENABLE_OV_PYTORCH_FRONTEND=ON, -DENABLE_OV_PYTORCH_FRONTEND=OFF,,"
+PACKAGECONFIG[jax] = "-DENABLE_OV_JAX_FRONTEND=ON, -DENABLE_OV_JAX_FRONTEND=OFF,,"
 
 SRC_URI += "${@bb.utils.contains('PACKAGECONFIG', 'python3', \
     'git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0', \
