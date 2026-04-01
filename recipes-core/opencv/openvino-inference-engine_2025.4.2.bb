@@ -9,14 +9,12 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            git://github.com/oneapi-src/oneDNN.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_gpu/thirdparty/onednn_gpu;name=onednn;nobranch=1 \
            git://github.com/herumi/xbyak.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/xbyak;name=xbyak;branch=master \
            git://github.com/openvinotoolkit/mlas.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/src/plugins/intel_cpu/thirdparty/mlas;name=mlas;nobranch=1 \
-           git://github.com/openvinotoolkit/googletest.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/gtest/gtest;name=gtest;nobranch=1;lfs=0 \
            file://0001-cmake-yocto-specific-tweaks-to-the-build-process.patch \
            file://0002-cmake-Fix-overloaded-virtual-error.patch \
            file://0001-Fix-dependencies-to-use-system.patch \
            file://0004-fix-python-detection.patch \
            file://0004-Don-t-detect-arm-compute-library-version.patch \
            file://0001-intel_cpu-remove-executable-stack-flag-from-libopenv.patch \
-           file://0001-RecordProperty-serializes-ints-and-64-bit-ints-inclu.patch;patchdir=thirdparty/gtest/gtest \
            file://0001-Don-t-error-out-on-CI_BUILD_NUMBER-not-defined.patch \
            file://0005-Use-system-zlib.patch \
            file://0005-ittapi-prefer-system-ittnotify-over-bundled-source.patch \
@@ -26,9 +24,8 @@ SRCREV_openvino = "85e49f27be1b1647a7ec331069b053596d1112f8"
 SRCREV_mkl = "a4ed4a789b6e0869e4f651bbfeff6878e91d388e"
 SRCREV_onednn = "29d64fe0ec0f1f20d7f80aa76630d58a6011a869"
 SRCREV_xbyak = "0d67fd1530016b7c56f3cd74b3fca920f4c3e2b4"
-SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
 SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
-SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_mlas_gtest"
+SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_mlas"
 
 LICENSE = "Apache-2.0 & MIT & BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
@@ -37,7 +34,6 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://src/plugins/intel_cpu/thirdparty/mlas/LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
                     file://src/plugins/intel_cpu/thirdparty/onednn/LICENSE;md5=3b64000f6e7d52516017622a37a94ce9 \
                     file://src/plugins/intel_gpu/thirdparty/onednn_gpu/LICENSE;md5=05fda7e0b3a0fe6749e8443316fc9a3f \
-                    file://thirdparty/gtest/gtest/LICENSE;md5=cbbd27594afd089daa160d3a16dd515a \
 "
 
 inherit cmake python3targetconfig pkgconfig qemu
@@ -101,6 +97,17 @@ PACKAGECONFIG[python3] = "-DENABLE_PYTHON=ON -DENABLE_PYTHON_PACKAGING=ON, -DENA
 PACKAGECONFIG[node] = "-DENABLE_JS=ON -DENABLE_SYSTEM_NODE=ON,-DENABLE_JS=OFF, nodejs"
 PACKAGECONFIG[samples] = "-DENABLE_SAMPLES=ON -DENABLE_COMPILE_TOOL=ON, -DENABLE_SAMPLES=OFF -DENABLE_COMPILE_TOOL=OFF, opencv"
 PACKAGECONFIG[verbose] = "-DVERBOSE_BUILD=1,-DVERBOSE_BUILD=0"
+PACKAGECONFIG[tests] = "-DENABLE_TESTS=ON, -DENABLE_TESTS=OFF,,"
+
+SRC_URI += "${@bb.utils.contains('PACKAGECONFIG', 'tests', \
+    'git://github.com/openvinotoolkit/googletest.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/gtest/gtest;name=gtest;nobranch=1;lfs=0 \
+     file://0001-RecordProperty-serializes-ints-and-64-bit-ints-inclu.patch;patchdir=thirdparty/gtest/gtest', \
+    '', d)}"
+SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
+SRCREV_FORMAT .= "${@bb.utils.contains('PACKAGECONFIG', 'tests', '_gtest', '', d)}"
+LIC_FILES_CHKSUM += "${@bb.utils.contains('PACKAGECONFIG', 'tests', \
+    'file://thirdparty/gtest/gtest/LICENSE;md5=cbbd27594afd089daa160d3a16dd515a', \
+    '', d)}"
 
 SRC_URI += "${@bb.utils.contains('PACKAGECONFIG', 'python3', \
     'git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0', \
