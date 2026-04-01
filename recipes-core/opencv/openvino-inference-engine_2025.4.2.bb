@@ -163,6 +163,11 @@ do_install:append() {
 
     find ${B}/src/plugins/intel_cpu/cross-compiled/ -type f -name *_disp.cpp -exec sed -i -e 's%'"${S}"'%'"${TARGET_DBGSRC_DIR}"'%g' {} +
 
+    # Remove sample helper files when samples are not packaged
+    if [ -d ${D}${datadir}/openvino ] && [ -z "${@bb.utils.contains('PACKAGECONFIG', 'samples', '1', '', d)}" ]; then
+        rm -rf ${D}${datadir}/openvino
+    fi
+
     # Install the Node.js addon (excluded from cmake install by CPACK RPM packaging)
     if [ -f ${S}/bin/intel64/ov_node_addon.node ]; then
         install -d ${D}${libdir}
@@ -181,7 +186,7 @@ FILES:${PN} += "\
                 "
 
 # Move inference engine samples into a separate package
-PACKAGES =+ "${PN}-samples"
+PACKAGES =+ "${@bb.utils.contains('PACKAGECONFIG', 'samples', '${PN}-samples', '', d)}"
 
 FILES:${PN}-samples = "${datadir}/openvino \
                        ${bindir} \
@@ -192,12 +197,12 @@ FILES:${PN}-samples = "${datadir}/openvino \
 RDEPENDS:${PN}-samples += "python3-core"
 
 # Package for inference engine python API
-PACKAGES =+ "${PN}-python3"
+PACKAGES =+ "${@bb.utils.contains('PACKAGECONFIG', 'python3', '${PN}-python3', '', d)}"
 
 FILES:${PN}-python3 = "${PYTHON_SITEPACKAGES_DIR}"
 
 # Package for Node.js bindings
-PACKAGES =+ "${PN}-node"
+PACKAGES =+ "${@bb.utils.contains('PACKAGECONFIG', 'node', '${PN}-node', '', d)}"
 
 FILES:${PN}-node = "${libdir}/ov_node_addon.node"
 
