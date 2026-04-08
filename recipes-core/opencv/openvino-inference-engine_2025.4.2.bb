@@ -97,9 +97,10 @@ DEPENDS:append:aarch64 = " arm-compute-library"
 COMPATIBLE_HOST:libc-musl = "null"
 
 PACKAGECONFIG ?= "tbb samples"
-# Threading models (mutually exclusive — enable only one)
+# Threading models (mutually exclusive — enable only one of tbb, omp, iomp, seq)
 PACKAGECONFIG[tbb] = "-DTHREADING=TBB -DENABLE_SYSTEM_TBB=ON -DTBB_DIR='${STAGING_LIBDIR}/cmake/TBB' -DENABLE_TBBBIND_2_5=OFF, , tbb,"
-PACKAGECONFIG[omp] = "-DTHREADING=OMP, , ,"
+PACKAGECONFIG[omp] = "-DTHREADING=OMP -DENABLE_INTEL_OPENMP=OFF, , ,"
+PACKAGECONFIG[iomp] = "-DTHREADING=OMP -DINTEL_OMP=${UNPACKDIR}/omp -DINTEL_OMP_LIBRARIES_RELEASE=${UNPACKDIR}/omp/lib/libiomp5.so, , ,"
 PACKAGECONFIG[seq] = "-DTHREADING=SEQ, , ,"
 PACKAGECONFIG[itt] = "-DENABLE_PROFILING_ITT=BASE, -DENABLE_PROFILING_ITT=OFF, itt,"
 PACKAGECONFIG[opencl] = "-DENABLE_INTEL_GPU=TRUE, -DENABLE_INTEL_GPU=FALSE, virtual/libopencl1 opencl-headers opencl-clhpp,"
@@ -107,6 +108,10 @@ PACKAGECONFIG[python3] = "-DENABLE_PYTHON=ON -DENABLE_PYTHON_PACKAGING=ON, -DENA
 PACKAGECONFIG[node] = "-DENABLE_JS=ON -DENABLE_SYSTEM_NODE=ON,-DENABLE_JS=OFF, nodejs"
 PACKAGECONFIG[samples] = "-DENABLE_SAMPLES=ON -DENABLE_COMPILE_TOOL=ON, -DENABLE_SAMPLES=OFF -DENABLE_COMPILE_TOOL=OFF, opencv"
 PACKAGECONFIG[verbose] = "-DVERBOSE_BUILD=1,-DVERBOSE_BUILD=0"
+
+IOMP_URI = "https://storage.openvinotoolkit.org/dependencies/thirdparty/linux/iomp.tgz;name=iomp"
+SRC_URI += "${@bb.utils.contains('PACKAGECONFIG', 'iomp', '${IOMP_URI}', '', d)}"
+SRC_URI[iomp.sha256sum] = "7832b16d82513ee880d97c27c7626f9525ebd678decf6a8fe6c38550f73227d9"
 
 do_configure:prepend() {
     # Dont set PROJECT_ROOT_DIR
@@ -124,6 +129,12 @@ EOF
 do_install:append() {
     rm -rf ${D}${prefix}/install_dependencies
     rm -rf ${D}${prefix}/setupvars.sh
+
+    # Install Intel OpenMP runtime when iomp PACKAGECONFIG is enabled
+    if [ -f ${UNPACKDIR}/omp/lib/libiomp5.so ]; then
+        install -d ${D}${libdir}
+        install -m 0755 ${UNPACKDIR}/omp/lib/libiomp5.so ${D}${libdir}/libiomp5.so
+    fi
 
     find ${B}/src/plugins/intel_cpu/cross-compiled/ -type f -name *_disp.cpp -exec sed -i -e 's%'"${S}"'%'"${TARGET_DBGSRC_DIR}"'%g' {} +
 
@@ -143,6 +154,11 @@ FILES:${PN} += "\
                 ${libdir}/openvino-${PV}/plugins.xml \
                 ${libdir}/openvino-${PV}/cache.json \
                 "
+
+# Intel OpenMP runtime (bundled, unversioned .so)
+PACKAGES =+ "${@bb.utils.contains('PACKAGECONFIG', 'iomp', '${PN}-iomp', '', d)}"
+FILES:${PN}-iomp = "${libdir}/libiomp5.so"
+RDEPENDS:${PN}:append = "${@bb.utils.contains('PACKAGECONFIG', 'iomp', ' ${PN}-iomp', '', d)}"
 
 # Move inference engine samples into a separate package
 PACKAGES =+ "${PN}-samples"
