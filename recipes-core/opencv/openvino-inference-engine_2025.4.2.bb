@@ -33,7 +33,6 @@ SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
 SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
 SRCREV_node-addon-api = "6babc960154752f686a7dca8e712991a976a754b"
 SRCREV_telemetry = "8abddc3dbc8beb04a39b5ea40cbba5020317102f"
-SRCREV_gtest = "99760ac1776430f3df65947992bf4e8ebc0d7660"
 SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_node-addon-api_mlas_telemetry_gtest"
 
 LICENSE = "Apache-2.0 & MIT & BSD-3-Clause"
