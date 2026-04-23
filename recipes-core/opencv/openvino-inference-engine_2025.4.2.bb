@@ -110,6 +110,12 @@ PACKAGECONFIG[samples] = "-DENABLE_SAMPLES=ON -DENABLE_COMPILE_TOOL=ON, -DENABLE
 PACKAGECONFIG[verbose] = "-DVERBOSE_BUILD=1,-DVERBOSE_BUILD=0"
 
 do_configure:prepend() {
+    # Note if no threading backend is selected in PACKAGECONFIG
+    threading_pkgcfg="${@bb.utils.filter('PACKAGECONFIG', 'tbb omp iomp seq', d)}"
+    if [ -z "${threading_pkgcfg}" ]; then
+        bbwarn "${PN}: no threading backend selected in PACKAGECONFIG (tbb/omp/iomp/seq); OpenVINO upstream default will be used."
+    fi
+
     # Dont set PROJECT_ROOT_DIR
     sed -i -e 's:\${OpenVINO_SOURCE_DIR}::;' ${S}/src/CMakeLists.txt
 
