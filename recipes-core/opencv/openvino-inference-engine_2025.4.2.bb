@@ -97,7 +97,7 @@ PACKAGECONFIG[python3] = "-DENABLE_PYTHON=ON -DENABLE_PYTHON_PACKAGING=ON, -DENA
 PACKAGECONFIG[node] = "-DENABLE_JS=ON -DENABLE_SYSTEM_NODE=ON,-DENABLE_JS=OFF, nodejs"
 PACKAGECONFIG[samples] = "-DENABLE_SAMPLES=ON -DENABLE_COMPILE_TOOL=ON, -DENABLE_SAMPLES=OFF -DENABLE_COMPILE_TOOL=OFF, opencv"
 PACKAGECONFIG[verbose] = "-DVERBOSE_BUILD=1,-DVERBOSE_BUILD=0"
-PACKAGECONFIG[tests] = "-DENABLE_TESTS=ON, -DENABLE_TESTS=OFF,,"
+PACKAGECONFIG[tests] = "-DENABLE_TESTS=ON, -DENABLE_TESTS=OFF, abseil-cpp,"
 
 SRC_URI += "${@bb.utils.contains('PACKAGECONFIG', 'tests', \
     'git://github.com/openvinotoolkit/googletest.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/gtest/gtest;name=gtest;nobranch=1;lfs=0 \
@@ -108,6 +108,7 @@ SRCREV_FORMAT .= "${@bb.utils.contains('PACKAGECONFIG', 'tests', '_gtest', '', d
 LIC_FILES_CHKSUM += "${@bb.utils.contains('PACKAGECONFIG', 'tests', \
     'file://thirdparty/gtest/gtest/LICENSE;md5=cbbd27594afd089daa160d3a16dd515a', \
     '', d)}"
+LDFLAGS:append = "${@bb.utils.contains('PACKAGECONFIG', 'tests', ' -Wl,--allow-shlib-undefined', '', d)}"
 
 SRC_URI += "${@bb.utils.contains('PACKAGECONFIG', 'python3', \
     'git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0', \
