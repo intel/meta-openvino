@@ -66,17 +66,21 @@ EXTRA_OECMAKE += " \
                   "
 EXTRA_OECMAKE:append:aarch64 = " -DARM_COMPUTE_LIB_DIR=${STAGING_LIBDIR} "
 
+# absl_vlog_config_internal is a private abseil lib referenced by static archives
+# linked into openvino frontends (tf, paddle). LDFLAGS places it before those archives
+# so --as-needed drops it. Only inject when tf or paddle frontend is enabled.
+EXTRA_OECMAKE:append = "${@bb.utils.contains_any('PACKAGECONFIG', 'tf paddle', \
+    ' -Dabsl_DIR=${STAGING_LIBDIR}/cmake/absl', '', d)}"
+TARGET_LDFLAGS:append = "${@bb.utils.contains_any('PACKAGECONFIG', 'tf paddle', \
+    ' -Wl,--no-as-needed -labsl_vlog_config_internal -Wl,--as-needed', '', d)}"
+
 DEPENDS += "\
-            flatbuffers-native \
             nlohmann-json \
             gflags \
-            protobuf \
-            protobuf-native \
             pugixml \
             python3-pybind11 \
             python3-scons-native \
             qemu-native \
-            snappy \
             zlib \
             "
 DEPENDS:append:aarch64 = " arm-compute-library"
@@ -85,7 +89,7 @@ DEPENDS:append:aarch64 = " arm-compute-library"
 #COMPATIBLE_HOST = '(x86_64).*-linux'
 COMPATIBLE_HOST:libc-musl = "null"
 
-PACKAGECONFIG ?= "tbb samples"
+PACKAGECONFIG ?= "tbb tf tflite paddle pytorch samples"
 # Threading models (mutually exclusive — enable only one of tbb, omp, iomp, seq)
 PACKAGECONFIG[tbb] = "-DTHREADING=TBB -DENABLE_SYSTEM_TBB=ON -DTBB_DIR='${STAGING_LIBDIR}/cmake/TBB' -DENABLE_TBBBIND_2_5=OFF, , tbb, , , omp iomp seq"
 PACKAGECONFIG[omp] = "-DTHREADING=OMP -DENABLE_INTEL_OPENMP=OFF, , , , , tbb iomp seq"
@@ -109,6 +113,11 @@ LIC_FILES_CHKSUM += "${@bb.utils.contains('PACKAGECONFIG', 'tests', \
     'file://thirdparty/gtest/gtest/LICENSE;md5=cbbd27594afd089daa160d3a16dd515a', \
     '', d)}"
 LDFLAGS:append = "${@bb.utils.contains('PACKAGECONFIG', 'tests', ' -Wl,--allow-shlib-undefined', '', d)}"
+
+PACKAGECONFIG[tf] = "-DENABLE_OV_TF_FRONTEND=ON, -DENABLE_OV_TF_FRONTEND=OFF, protobuf protobuf-native snappy abseil-cpp,"
+PACKAGECONFIG[tflite] = "-DENABLE_OV_TF_LITE_FRONTEND=ON, -DENABLE_OV_TF_LITE_FRONTEND=OFF, flatbuffers-native,"
+PACKAGECONFIG[paddle] = "-DENABLE_OV_PADDLE_FRONTEND=ON, -DENABLE_OV_PADDLE_FRONTEND=OFF, protobuf protobuf-native abseil-cpp,"
+PACKAGECONFIG[pytorch] = "-DENABLE_OV_PYTORCH_FRONTEND=ON, -DENABLE_OV_PYTORCH_FRONTEND=OFF,,"
 
 SRC_URI += "${@bb.utils.contains('PACKAGECONFIG', 'python3', \
     'git://github.com/openvinotoolkit/telemetry.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/telemetry;name=telemetry;nobranch=1;lfs=0', \
