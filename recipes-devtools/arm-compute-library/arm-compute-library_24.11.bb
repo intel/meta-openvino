@@ -16,8 +16,6 @@ SRC_URI = " \
 
 PR = "r2"
 
-S = "${WORKDIR}/git"
-
 # scons here is too old for MAXLINELENGTH
 SCONS_MAXLINELENGTH = ""
 
@@ -48,7 +46,6 @@ EXTRA_OESCONS:append:x86-64 = " arch=x86_64 neon=0"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
 #CXXFLAGS += "-fopenmp"
-LIBS += "-larmpl_lp64_mp"
 
 do_install() {
     CP_ARGS="-Prf --preserve=mode,timestamps --no-preserve=ownership"
