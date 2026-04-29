@@ -1,6 +1,4 @@
 import os
-script_path = os.path.dirname(os.path.realpath(__file__))
-files_path = os.path.join(script_path, '../../files/')
 
 class OpenvinoInferenceEngineTest(object):
     ie_input_files = {'ie_python_sample': 'benchmark_app.py',
