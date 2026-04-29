@@ -25,7 +25,7 @@ SRCREV_mkl = "a4ed4a789b6e0869e4f651bbfeff6878e91d388e"
 SRCREV_onednn = "29d64fe0ec0f1f20d7f80aa76630d58a6011a869"
 SRCREV_xbyak = "0d67fd1530016b7c56f3cd74b3fca920f4c3e2b4"
 SRCREV_mlas = "d1bc25ec4660cddd87804fcf03b2411b5dfb2e94"
-SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_ade_mlas"
+SRCREV_FORMAT = "openvino_mkl_onednn_xbyak_mlas"
 
 LICENSE = "Apache-2.0 & MIT & BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
