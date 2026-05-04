@@ -66,11 +66,11 @@ EXTRA_OECMAKE += " \
 EXTRA_OECMAKE:append:aarch64 = " -DARM_COMPUTE_LIB_DIR=${STAGING_LIBDIR} "
 
 # absl_vlog_config_internal is a private abseil lib referenced by static archives
-# linked into openvino frontends (tf, paddle). LDFLAGS places it before those archives
-# so --as-needed drops it. Only inject when tf or paddle frontend is enabled.
-EXTRA_OECMAKE:append = "${@bb.utils.contains_any('PACKAGECONFIG', 'tf paddle', \
+# linked into openvino frontends (onnx, tf, paddle). LDFLAGS places it before those
+# archives so --as-needed drops it. Only inject when frontend that uses protobuf is enabled.
+EXTRA_OECMAKE:append = "${@bb.utils.contains_any('PACKAGECONFIG', 'onnx tf paddle', \
     ' -Dabsl_DIR=${STAGING_LIBDIR}/cmake/absl', '', d)}"
-TARGET_LDFLAGS:append = "${@bb.utils.contains_any('PACKAGECONFIG', 'tf paddle', \
+TARGET_LDFLAGS:append = "${@bb.utils.contains_any('PACKAGECONFIG', 'onnx tf paddle', \
     ' -Wl,--no-as-needed -labsl_vlog_config_internal -Wl,--as-needed', '', d)}"
 
 DEPENDS += "\
@@ -114,7 +114,7 @@ LIC_FILES_CHKSUM += "${@bb.utils.contains('PACKAGECONFIG', 'tests', \
 LDFLAGS:append = "${@bb.utils.contains('PACKAGECONFIG', 'tests', ' -Wl,--allow-shlib-undefined', '', d)}"
 
 # Frontends
-PACKAGECONFIG[onnx] = "-DENABLE_OV_ONNX_FRONTEND=ON, -DENABLE_OV_ONNX_FRONTEND=OFF,,"
+PACKAGECONFIG[onnx] = "-DENABLE_OV_ONNX_FRONTEND=ON, -DENABLE_OV_ONNX_FRONTEND=OFF, protobuf protobuf-native abseil-cpp,"
 PACKAGECONFIG[tf] = "-DENABLE_OV_TF_FRONTEND=ON, -DENABLE_OV_TF_FRONTEND=OFF, protobuf protobuf-native snappy abseil-cpp,"
 PACKAGECONFIG[tflite] = "-DENABLE_OV_TF_LITE_FRONTEND=ON, -DENABLE_OV_TF_LITE_FRONTEND=OFF, flatbuffers-native,"
 PACKAGECONFIG[paddle] = "-DENABLE_OV_PADDLE_FRONTEND=ON, -DENABLE_OV_PADDLE_FRONTEND=OFF, protobuf protobuf-native abseil-cpp,"
@@ -137,6 +137,15 @@ SRCREV_node-addon-api = "6babc960154752f686a7dca8e712991a976a754b"
 SRCREV_FORMAT .= "${@bb.utils.contains('PACKAGECONFIG', 'node', '_node-addon-api', '', d)}"
 LIC_FILES_CHKSUM += "${@bb.utils.contains('PACKAGECONFIG', 'node', \
     'file://node-addon-api-src/LICENSE.md;md5=fc3ff1120869be6b3cce17f9a06bfe2e', \
+    '', d)}"
+
+SRC_URI += "${@bb.utils.contains('PACKAGECONFIG', 'onnx', \
+    'git://github.com/onnx/onnx.git;protocol=https;destsuffix=${BB_GIT_DEFAULT_DESTSUFFIX}/thirdparty/onnx/onnx;name=onnx;branch=rel-1.17.0;lfs=0', \
+    '', d)}"
+SRCREV_onnx = "b8baa8446686496da4cc8fda09f2b6fe65c2a02c"
+SRCREV_FORMAT .= "${@bb.utils.contains('PACKAGECONFIG', 'onnx', '_onnx', '', d)}"
+LIC_FILES_CHKSUM += "${@bb.utils.contains('PACKAGECONFIG', 'onnx', \
+    'file://thirdparty/onnx/onnx/LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57', \
     '', d)}"
 
 do_configure:prepend() {
