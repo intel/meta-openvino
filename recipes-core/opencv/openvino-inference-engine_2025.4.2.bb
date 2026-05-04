@@ -183,6 +183,11 @@ do_install:append() {
         install -d ${D}${libdir}
         install -m 0755 ${S}/bin/intel64/ov_node_addon.node ${D}${libdir}/ov_node_addon.node
     fi
+
+    # Install JAX frontend (DISABLE_CPP_INSTALL / EXCLUDE_FROM_ALL in upstream CMake)
+    if [ -f ${S}/bin/intel64/libopenvino_jax_frontend.so.${PV} ]; then
+        cmake --install ${B} --component jax --prefix ${D}${prefix}
+    fi
 }
 
 # Otherwise e.g. ros-openvino-toolkit-dynamic-vino-sample when using dldt-inference-engine uses dldt-inference-engine WORKDIR
