@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: David Nystrom <david.nystrom@est.tech>
+Date: Sun, 11 May 2026 20:00:00 +0000
+Subject: [PATCH] python: rename benchmark_app entry point to benchmark_app_python3
+
+Avoid a file collision with the C++ benchmark_app sample binary at
+/usr/bin/benchmark_app when both samples and python3 are enabled.
+
+Upstream-Status: Inappropriate [OE-specific]
+
+Signed-off-by: David Nystrom <david.nystrom@est.tech>
+---
+ setup.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/setup.py b/setup.py
+--- a/setup.py
++++ b/setup.py
+@@ -234,7 +234,7 @@
+     "benchmark_app": {
+         "entry_point": {
+             "console_scripts": [
+-                "benchmark_app = openvino.tools.benchmark.main:main",
++                "benchmark_app_python3 = openvino.tools.benchmark.main:main",
+             ],
+         },
+         "name": "benchmark_app",
