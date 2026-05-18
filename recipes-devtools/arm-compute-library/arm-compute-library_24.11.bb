@@ -23,7 +23,7 @@ inherit scons
 
 ARM_INSTRUCTION_SET = "arm"
 
-PACKAGECONFIG ?= "cppthreads opencl embed openmp examples tests"
+PACKAGECONFIG ?= "cppthreads embed openmp examples tests ${@bb.utils.filter('DISTRO_FEATURES', 'opencl', d)}"
 
 PACKAGECONFIG[Werror] = "Werror=1,Werror=0"
 PACKAGECONFIG[tests] = "benchmark_tests=1 validation_tests=1,benchmark_tests=0 validation_tests=0"
