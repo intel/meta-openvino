@@ -38,11 +38,23 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=86d3f3a95c324c9479bd8986968f4327 \
 
 inherit cmake python3targetconfig pkgconfig qemu
 
+# Keep backward-compatible default, but allow local/distro overrides.
+OV_CMAKE_BUILD_TYPE ?= "RelWithDebInfo"
+
+# Keep full RelWithDebInfo debug info by default. Enable this to shrink
+# massive DWARF output from template-heavy compilation units.
+OV_REDUCE_DEBUG_INFO ?= "0"
+OV_RELWITHDEBINFO_TUNING = "${@bb.utils.contains('OV_REDUCE_DEBUG_INFO', '1', ' -g1 -fdebug-types-section', '', d)}"
+OV_RELWITHDEBINFO_C_FLAGS ?= "${FULL_OPTIMIZATION} -DNDEBUG${OV_RELWITHDEBINFO_TUNING}"
+OV_RELWITHDEBINFO_CXX_FLAGS ?= "${FULL_OPTIMIZATION} -DNDEBUG${OV_RELWITHDEBINFO_TUNING}"
+
 EXTRA_OECMAKE += " \
                   -DCMAKE_CROSSCOMPILING_EMULATOR=${WORKDIR}/qemuwrapper \
                   -DENABLE_OPENCV=OFF \
                   -DENABLE_INTEL_GNA=OFF \
-                  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+                  -DCMAKE_BUILD_TYPE=${OV_CMAKE_BUILD_TYPE} \
+                  -DCMAKE_C_FLAGS_RELWITHDEBINFO='${OV_RELWITHDEBINFO_C_FLAGS}' \
+                  -DCMAKE_CXX_FLAGS_RELWITHDEBINFO='${OV_RELWITHDEBINFO_CXX_FLAGS}' \
                   -DTREAT_WARNING_AS_ERROR=FALSE \
                   -DENABLE_DATA=FALSE \
                   -DENABLE_SYSTEM_GFLAGS=ON \
