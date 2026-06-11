@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Yogesh Tyagi <yogesh.tyagi@intel.com>
+Date: Wed, 11 Jun 2026 00:00:00 +0000
+Subject: [PATCH] intel_gpu: avoid duplicate opencl.hpp param traits
+
+With newer OpenCL C++ headers (opencl.hpp), the
+CL_HPP_PARAM_NAME_INFO_1_1_DEPRECATED_IN_2_0_ param traits are already
+declared by the header, so re-declaring them in ocl_wrapper.hpp produces
+duplicate-definition errors. Drop the redundant local declaration and
+rely on the ones provided by the OpenCL headers.
+
+Upstream-Status: Inappropriate [toolchain/header compatibility]
+
+Signed-off-by: Yogesh Tyagi <yogesh.tyagi@intel.com>
+---
+diff --git a/src/plugins/intel_gpu/src/runtime/ocl/ocl_wrapper.hpp b/src/plugins/intel_gpu/src/runtime/ocl/ocl_wrapper.hpp
+index 13f6eb7..5a2d7d1 100644
+--- a/src/plugins/intel_gpu/src/runtime/ocl/ocl_wrapper.hpp
++++ b/src/plugins/intel_gpu/src/runtime/ocl/ocl_wrapper.hpp
+@@ -75,7 +75,6 @@
+ #if CL_HPP_TARGET_OPENCL_VERSION >= 200 && CL_HPP_MINIMUM_OPENCL_VERSION >= 200
+ namespace cl {
+ namespace detail {
+-CL_HPP_PARAM_NAME_INFO_1_1_DEPRECATED_IN_2_0_(CL_HPP_DECLARE_PARAM_TRAITS_)
+ }
+ }
+ #endif
