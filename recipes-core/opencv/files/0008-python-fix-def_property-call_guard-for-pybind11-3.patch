@@ -1,0 +1,62 @@
+From 3ca3d437c2f7ad0adacbf5029834a40b326e536f Mon Sep 17 00:00:00 2001
+From: Przemyslaw Wysocki <przemyslaw.wysocki@intel.com>
+Date: Tue, 3 Mar 2026 21:13:34 +0100
+Subject: [PATCH] [PyOV] Bump pybind to 3.0.2 and fix new issues (#34468)
+
+pybind11 3.x removed call_guard support from the def_property* family and
+turned it into a hard static_assert:
+
+    def_property family does not currently support call_guard.
+    Use a py::cpp_function instead.
+
+The pyopenvino bindings pass py::call_guard<py::gil_scoped_release>() to two
+def_property_readonly() calls (Core.available_devices and
+InferRequest.profiling_info), which fails to compile against pybind11 >= 3.0.
+
+Wrap the getter in a py::cpp_function that carries the call_guard, as the
+error message directs. This preserves the GIL-release behaviour while being
+accepted by both pybind11 2.x and 3.x.
+
+Only the def_property_readonly call_guard hunks from the upstream commit
+are backported here; the recipe already tracks the 3.0.4 system pybind11.
+
+Upstream-Status: Backport [https://github.com/openvinotoolkit/openvino/commit/3ca3d437c2f7ad0adacbf5029834a40b326e536f]
+
+Signed-off-by: Przemyslaw Wysocki <przemyslaw.wysocki@intel.com>
+Signed-off-by: Yogesh Tyagi <yogesh.tyagi@intel.com>
+---
+diff --git a/src/bindings/python/src/pyopenvino/core/core.cpp b/src/bindings/python/src/pyopenvino/core/core.cpp
+index bf68976c563b..cd37f520ca51 100644
+--- a/src/bindings/python/src/pyopenvino/core/core.cpp
++++ b/src/bindings/python/src/pyopenvino/core/core.cpp
+@@ -782,8 +782,8 @@ void regclass_Core(py::module m) {
+             )");
+
+     cls.def_property_readonly("available_devices",
+-                              &ov::Core::get_available_devices,
+-                              py::call_guard<py::gil_scoped_release>(),
++                              py::cpp_function(&ov::Core::get_available_devices,
++                                               py::call_guard<py::gil_scoped_release>()),
+                               R"(
+                                     Returns devices available for inference Core objects goes over all registered plugins.
+
+diff --git a/src/bindings/python/src/pyopenvino/core/infer_request.cpp b/src/bindings/python/src/pyopenvino/core/infer_request.cpp
+index a21c4d557c91..8b5b5f72b2dc 100644
+--- a/src/bindings/python/src/pyopenvino/core/infer_request.cpp
++++ b/src/bindings/python/src/pyopenvino/core/infer_request.cpp
+@@ -816,10 +816,11 @@ void regclass_InferRequest(py::module m) {
+
+     cls.def_property_readonly(
+         "profiling_info",
+-        [](InferRequestWrapper& self) {
+-            return self.m_request->get_profiling_info();
+-        },
+-        py::call_guard<py::gil_scoped_release>(),
++        py::cpp_function(
++            [](InferRequestWrapper& self) {
++                return self.m_request->get_profiling_info();
++            },
++            py::call_guard<py::gil_scoped_release>()),
+         R"(
+             Performance is measured per layer to get feedback on the most time-consuming operation.
+             Not all plugins provide meaningful data!
