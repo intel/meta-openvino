@@ -19,6 +19,7 @@ SRC_URI = "git://github.com/openvinotoolkit/openvino.git;protocol=https;name=ope
            file://0005-Use-system-zlib.patch \
            file://0005-ittapi-prefer-system-ittnotify-over-bundled-source.patch \
            file://0007-intel-gpu-handle-opencl-hpp-1.1-param-traits-macro.patch \
+           file://0008-python-fix-def_property-call_guard-for-pybind11-3.patch \
            "
 
 SRCREV_openvino = "85e49f27be1b1647a7ec331069b053596d1112f8"
