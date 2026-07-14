@@ -39,7 +39,7 @@ PACKAGECONFIG[examples] = "examples=1,examples=0"
 EXTRA_OESCONS = "build=cross_compile os=linux toolchain_prefix=' ' extra_cxx_flags='-fPIC -O2' ${PACKAGECONFIG_CONFARGS}"
 
 EXTRA_OESCONS:append:aarch64 = " arch=arm64-v8a neon=1"
-EXTRA_OESCONS:append:arm = " os=webos neon=1 arch=armv7a${@ '-hf' if (d.getVar('TUNE_CCARGS_MFLOAT') == 'hard') else ''}"
+EXTRA_OESCONS:append:arm = " neon=1 arch=armv7a${@ '-hf' if (d.getVar('TUNE_CCARGS_MFLOAT') == 'hard') else ''}"
 EXTRA_OESCONS:append:x86 = " arch=x86_32 neon=0 estate=32"
 EXTRA_OESCONS:append:x86-64 = " arch=x86_64 neon=0"
 
