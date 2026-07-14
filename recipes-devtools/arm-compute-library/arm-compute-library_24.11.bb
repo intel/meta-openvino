@@ -4,12 +4,11 @@ LICENSE = "MIT & Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSES/Apache-2.0.txt;md5=b3fe88572da337dd5b13cafe9424e879 \
                     file://LICENSES/MIT.txt;md5=35f8944fae972976691f3483b0ac9dba \
                    "
-SRCBRANCH = "main"
 # Matches v${PV}
 SRCREV = "f44f09dfd263c2bb0238f4323e366a210e9d4aae"
 
 SRC_URI = " \
-    git://github.com/ARM-software/ComputeLibrary.git;branch=${SRCBRANCH};protocol=https \
+    git://github.com/ARM-software/ComputeLibrary.git;nobranch=1;protocol=https \
     file://arm-compute-library.pc.in \
     file://0001-SConstruct-Add-prefix-PREFIX-variables.patch \
 "
