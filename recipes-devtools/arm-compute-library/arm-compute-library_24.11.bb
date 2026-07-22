@@ -1,6 +1,6 @@
 SUMMARY = "The ARM Computer Vision and Machine Learning library"
 DESCRIPTION = "The ARM Computer Vision and Machine Learning library is a set of functions optimised for both ARM CPUs and GPUs."
-LICENSE = "MIT & Apache-2.0"
+LICENSE = "Apache-2.0 AND MIT"
 LIC_FILES_CHKSUM = "file://LICENSES/Apache-2.0.txt;md5=b3fe88572da337dd5b13cafe9424e879 \
                     file://LICENSES/MIT.txt;md5=35f8944fae972976691f3483b0ac9dba \
                    "
